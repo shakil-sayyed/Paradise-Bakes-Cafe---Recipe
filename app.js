@@ -1694,3 +1694,15 @@ document.addEventListener('keydown', (e) => {
         });
     }
 });
+
+// Responsive Hamburger Menu Logic
+const navToggle = document.getElementById('nav-toggle');
+const navMenu = document.getElementById('nav-menu');
+navToggle.onclick = function() {
+  navMenu.classList.toggle('open');
+  if (navMenu.classList.contains('open')) {
+    navMenu.querySelectorAll('button').forEach(btn=>{
+      btn.onclick = () => navMenu.classList.remove('open');
+    });
+  }
+};
