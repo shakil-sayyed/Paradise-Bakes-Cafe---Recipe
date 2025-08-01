@@ -322,6 +322,7 @@ class ParadiseCafeApp {
                 const targetSection = btn.getAttribute('data-section');
                 console.log('Navigation clicked:', targetSection);
                 this.showSection(targetSection);
+                this.closeHamburgerMenu(); // Close hamburger menu when nav item is clicked
                 return;
             }
             
@@ -337,7 +338,43 @@ class ParadiseCafeApp {
             }
         });
         
+        // Setup hamburger menu toggle
+        this.setupHamburgerMenu();
+        
         console.log('Navigation system ready');
+    }
+
+    // NEW: Hamburger menu setup method
+    setupHamburgerMenu() {
+        const navToggle = document.getElementById('nav-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                console.log('Hamburger menu clicked');
+                navMenu.classList.toggle('open');
+                
+                // Close menu when clicking nav buttons
+                if (navMenu.classList.contains('open')) {
+                    navMenu.querySelectorAll('.nav-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            navMenu.classList.remove('open');
+                        });
+                    });
+                }
+            });
+            console.log('Hamburger menu setup complete');
+        } else {
+            console.warn('Hamburger menu elements not found:', { navToggle, navMenu });
+        }
+    }
+
+    // NEW: Close hamburger menu method
+    closeHamburgerMenu() {
+        const navMenu = document.getElementById('nav-menu');
+        if (navMenu && navMenu.classList.contains('open')) {
+            navMenu.classList.remove('open');
+        }
     }
 
     showSection(sectionId) {
@@ -414,7 +451,10 @@ class ParadiseCafeApp {
         const cost = recipe.costINR ? `₹${recipe.costINR}` : 'Cost varies';
         
         return `
-            <div class="recipe-card" data-recipe-id="${recipe.id}">
+            <div class="recipe-card" data-recipe-id="${recipe.id}" 
+                 onclick="app.showRecipeDetail('${recipe.id}')" 
+                 tabindex="0" 
+                 onkeypress="if(event.key==='Enter'){app.showRecipeDetail('${recipe.id}')}">
                 <h4>${recipe.name}</h4>
                 <div class="recipe-meta">
                     <span class="recipe-type">${recipe.type}</span>
@@ -425,96 +465,145 @@ class ParadiseCafeApp {
                     <p><strong>Cook Time:</strong> ${cookTime} | <strong>Cost:</strong> ${cost}</p>
                     <p><em>Click for full recipe with Hinglish steps</em></p>
                 </div>
+                <div class="recipe-tips">
+                    ${Array.isArray(recipe.tips) ? recipe.tips.map(tip => `• ${tip}`).join('<br>') : `• ${recipe.tips}`}
+                </div>
+                <div class="recipe-equipment">
+                    <strong>Equipment:</strong> ${recipe.equipment.join(', ')}
+                </div>
+                <div class="recipe-cooking">
+                    <strong>Cooking Time:</strong> ${cookTime}
+                </div>
+                ${recipe.storage ? `<div class="recipe-storage"><strong>Storage:</strong> ${recipe.storage}</div>` : ''}
+                ${recipe.reheat ? `<div class="recipe-reheat"><strong>Reheating:</strong> ${recipe.reheat}</div>` : ''}
             </div>
         `;
     }
 
+    showRecipeDetail(recipeId) {
+        const recipe = this.appData.recipes.find(r => r.id === recipeId);
+        if (!recipe) return;
+        
+        const modal = document.getElementById('recipe-modal');
+        const content = document.getElementById('recipe-modal-content');
+        
+        if (!modal || !content) return;
+        
+        const temp = recipe.tempC ? `${recipe.tempC}°C` : 'Variable';
+        const equipment = recipe.equipment ? recipe.equipment.join(', ') : 'Standard kitchen equipment';
+        const cookTime = recipe.cookTimeMin ? `${recipe.cookTimeMin} minutes` : 'Variable';
+        
+        content.innerHTML = `
+            <h2>${recipe.name}</h2>
+            <div class="recipe-type-badge">${recipe.type}</div>
+            
+            <h3>📝 Ingredients</h3>
+            <ul class="ingredients-list">
+                ${recipe.ingredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+            </ul>
+            
+            <h3>👨‍🍳 Hinglish Cooking Steps</h3>
+            <ol class="cooking-steps">
+                ${recipe.steps.map(step => `<li>${step}</li>`).join('')}
+            </ol>
+            
+            <h3>💡 Chef Tips</h3>
+            <div class="chef-tips">
+                ${Array.isArray(recipe.tips) ? recipe.tips.map(tip => `• ${tip}`).join('<br>') : `• ${recipe.tips}`}
+            </div>
+            
+            <h3>🔧 Equipment Required</h3>
+            <p><strong>Equipment:</strong> ${equipment}</p>
+            
+            <h3>🕐 Cooking Details</h3>
+            <p><strong>Temperature:</strong> ${temp}</p>
+            <p><strong>Cooking Time:</strong> ${cookTime}</p>
+            
+            ${recipe.storage ? `<h3>📦 Storage</h3><p><strong>Storage:</strong> ${recipe.storage}</p>` : ''}
+            
+            ${recipe.reheat ? `<h3>🔥 Reheating</h3><p><strong>Reheating:</strong> ${recipe.reheat}</p>` : ''}
+            
+            <div class="recipe-cost">
+                <h3>💰 Cost Information</h3>
+                <p><strong>Cost per portion:</strong> ₹${recipe.costINR || 'Varies'}</p>
+            </div>
+        `;
+        
+        modal.classList.remove('hidden');
+    }
+
     setupRecipeCategories() {
-        document.addEventListener('click', (e) => {
-            if (e.target.matches('.category-btn[data-category]') || e.target.closest('.category-btn[data-category]')) {
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        categoryButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const btn = e.target.matches('.category-btn[data-category]') ? e.target : e.target.closest('.category-btn[data-category]');
-                const targetCategory = btn.getAttribute('data-category');
-                this.showRecipeCategory(targetCategory);
-            }
+                const category = btn.getAttribute('data-category');
+                this.showRecipeCategory(category);
+            });
         });
     }
 
-    showRecipeCategory(categoryId) {
-        const categoryButtons = document.querySelectorAll('.category-btn[data-category]');
-        const recipeSections = document.querySelectorAll('.recipe-section');
+    showRecipeCategory(category) {
+        console.log('Showing recipe category:', category);
         
+        // Update button states
+        const categoryButtons = document.querySelectorAll('.category-btn');
         categoryButtons.forEach(btn => {
-            btn.classList.toggle('active', btn.getAttribute('data-category') === categoryId);
-        });
-        
-        recipeSections.forEach(section => {
-            if (section.id === `${categoryId}-recipes`) {
-                section.style.display = 'block';
-                section.classList.add('active');
+            if (btn.getAttribute('data-category') === category) {
+                btn.classList.add('active');
             } else {
-                section.style.display = 'none';
-                section.classList.remove('active');
+                btn.classList.remove('active');
             }
         });
         
-        this.currentRecipeCategory = categoryId;
+        // Show/hide recipe sections
+        const recipeSections = document.querySelectorAll('.recipe-section');
+        recipeSections.forEach(section => {
+            if (section.id === `${category}-recipes`) {
+                section.classList.add('active');
+                section.style.display = 'block';
+            } else {
+                section.classList.remove('active');
+                section.style.display = 'none';
+            }
+        });
+        
+        this.currentRecipeCategory = category;
     }
 
     setupRecipeSearch() {
         const searchInput = document.getElementById('recipe-search-input');
-        const filterSelect = document.getElementById('recipe-filter');
-        
         if (searchInput) {
-            searchInput.addEventListener('input', () => this.filterRecipes());
-        }
-        
-        if (filterSelect) {
-            filterSelect.addEventListener('change', () => this.filterRecipes());
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                this.filterRecipes(query);
+            });
         }
     }
 
-    filterRecipes() {
-        const searchTerm = document.getElementById('recipe-search-input')?.value.toLowerCase() || '';
-        const filterType = document.getElementById('recipe-filter')?.value || '';
-        const activeGrid = document.querySelector('.recipe-section.active .recipes-grid');
-        
-        if (!activeGrid) return;
-        
-        const recipeCards = activeGrid.querySelectorAll('.recipe-card');
-        
+    filterRecipes(query) {
+        const recipeCards = document.querySelectorAll('.recipe-card');
         recipeCards.forEach(card => {
-            const recipeName = card.querySelector('h4').textContent.toLowerCase();
-            const recipeType = card.querySelector('.recipe-type').textContent;
-            
-            const matchesSearch = recipeName.includes(searchTerm);
-            const matchesFilter = !filterType || recipeType === filterType;
-            
-            card.style.display = matchesSearch && matchesFilter ? 'block' : 'none';
+            const text = card.textContent.toLowerCase();
+            if (text.includes(query)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
         });
     }
 
     setupRecipeModal() {
         const modal = document.getElementById('recipe-modal');
-        const closeBtn = modal?.querySelector('.close');
-        
-        document.addEventListener('click', (e) => {
-            if (e.target.matches('.recipe-card') || e.target.closest('.recipe-card')) {
-                e.preventDefault();
-                const card = e.target.matches('.recipe-card') ? e.target : e.target.closest('.recipe-card');
-                const recipeId = card.getAttribute('data-recipe-id');
-                this.showRecipeModal(recipeId);
-            }
-        });
-        
-        if (closeBtn) {
-            closeBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                modal.classList.add('hidden');
-            });
-        }
-        
         if (modal) {
+            const closeBtn = modal.querySelector('.close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    modal.classList.add('hidden');
+                });
+            }
+            
+            // Close modal when clicking outside
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.classList.add('hidden');
@@ -523,447 +612,457 @@ class ParadiseCafeApp {
         }
     }
 
-    showRecipeModal(recipeId) {
-        const recipe = this.appData.recipes.find(r => r.id === recipeId);
-        const modal = document.getElementById('recipe-modal');
-        const modalContent = document.getElementById('recipe-modal-content');
-        
-        if (!recipe || !modal || !modalContent) return;
-        
-        const sizeDisplay = recipe.sizes ? recipe.sizes.join(' | ') : '';
-        const equipment = recipe.equipment ? recipe.equipment.join(', ') : 'Standard kitchen equipment';
-        const cookTime = recipe.cookTimeMin ? `${recipe.cookTimeMin} minutes` : 'Variable';
-        const temp = recipe.tempC ? `${recipe.tempC}°C` : 'As needed';
-        const cost = recipe.costINR ? `₹${recipe.costINR}` : 'Cost varies';
-        
-        modalContent.innerHTML = `
-            <div class="recipe-modal-header">
-                <h3>${recipe.name}</h3>
-                <div class="recipe-modal-meta">
-                    <span class="recipe-type">${recipe.type}</span>
-                    ${sizeDisplay ? `<span class="recipe-sizes">${sizeDisplay}</span>` : ''}
-                    <span class="recipe-cost">${cost}</span>
-                </div>
-            </div>
-            
-            <div class="recipe-modal-section">
-                <h4>🛒 Ingredients</h4>
-                <ul>
-                    ${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}
-                </ul>
-            </div>
-            
-            <div class="recipe-modal-section">
-                <h4>👨‍🍳 Method (Hinglish Steps)</h4>
-                <ol>
-                    ${recipe.steps.map((step, index) => `<li><strong>Step ${index + 1}:</strong> ${step}</li>`).join('')}
-                </ol>
-            </div>
-            
-            <div class="recipe-modal-section">
-                <h4>💡 Chef Tips</h4>
-                <div class="chef-tips">
-                    ${Array.isArray(recipe.tips) ? recipe.tips.map(tip => `<p>• ${tip}</p>`).join('') : `<p>• ${recipe.tips}</p>`}
-                </div>
-            </div>
-            
-            <div class="recipe-modal-section">
-                <h4>📋 Equipment & Details</h4>
-                <p><strong>Equipment:</strong> ${equipment}</p>
-                <p><strong>Cooking Time:</strong> ${cookTime}</p>
-                <p><strong>Temperature:</strong> ${temp}</p>
-                ${recipe.storage ? `<p><strong>Storage:</strong> ${recipe.storage}</p>` : ''}
-                ${recipe.reheat ? `<p><strong>Reheating:</strong> ${recipe.reheat}</p>` : ''}
-            </div>
-        `;
-        
-        modal.classList.remove('hidden');
-    }
-
     setupEquipmentAccordion() {
-        const accordion = document.getElementById('equipment-accordion');
-        if (!accordion) return;
+        console.log('Setting up equipment accordion...');
         
-        accordion.innerHTML = this.appData.equipment.map((item, index) => `
-            <div class="equipment-item">
-                <div class="equipment-header" data-equipment="${index}">
-                    <div>
-                        <h3>${item.name}</h3>
+        const equipmentAccordion = document.getElementById('equipment-accordion');
+        if (!equipmentAccordion) return;
+        
+        const equipmentHTML = this.appData.equipment.map(equipment => {
+            const dailyTasks = equipment.dailyCleaning.map(task => `<li>${task}</li>`).join('');
+            const weeklyTasks = equipment.weeklyMaintenance.map(task => `<li>${task}</li>`).join('');
+            const monthlyTasks = equipment.monthlyMaintenance.map(task => `<li>${task}</li>`).join('');
+            const operatingSteps = equipment.operatingSteps.map(step => `<li>${step}</li>`).join('');
+            const safetyNotes = equipment.safetyNotes.map(note => `<li>${note}</li>`).join('');
+            
+            return `
+                <div class="equipment-item">
+                    <div class="equipment-header" onclick="app.toggleEquipment('${equipment.id}')">
+                        <h3>${equipment.name}</h3>
                         <div class="equipment-specs">
-                            ${item.capacity ? `<span class="spec">Capacity: ${item.capacity}</span>` : ''}
-                            ${item.maxTempC ? `<span class="spec">Max Temp: ${item.maxTempC}°C</span>` : ''}
-                            ${item.power ? `<span class="spec">Power: ${item.power}</span>` : ''}
-                            ${item.tempRange ? `<span class="spec">Temp Range: ${item.tempRange}</span>` : ''}
+                            <span>Capacity: ${equipment.capacity}</span>
+                            ${equipment.maxTempC ? `<span>Max Temp: ${equipment.maxTempC}°C</span>` : ''}
+                            <span>Power: ${equipment.power}</span>
+                        </div>
+                        <span class="accordion-arrow">▼</span>
+                    </div>
+                    <div class="equipment-content" id="${equipment.id}-content">
+                        <div class="equipment-tabs">
+                            <button class="eq-tab active" onclick="app.showEquipmentTab('${equipment.id}', 'operating')">Operating Steps</button>
+                            <button class="eq-tab" onclick="app.showEquipmentTab('${equipment.id}', 'daily')">Daily Cleaning</button>
+                            <button class="eq-tab" onclick="app.showEquipmentTab('${equipment.id}', 'weekly')">Weekly Maintenance</button>
+                            <button class="eq-tab" onclick="app.showEquipmentTab('${equipment.id}', 'monthly')">Monthly Maintenance</button>
+                            <button class="eq-tab" onclick="app.showEquipmentTab('${equipment.id}', 'safety')">Safety Notes</button>
+                        </div>
+                        
+                        <div id="${equipment.id}-operating" class="equipment-tab-content active">
+                            <h4>Operating Steps</h4>
+                            <ol class="equipment-steps">${operatingSteps}</ol>
+                        </div>
+                        
+                        <div id="${equipment.id}-daily" class="equipment-tab-content">
+                            <h4>Daily Cleaning Tasks</h4>
+                            <ul class="equipment-tasks">${dailyTasks}</ul>
+                        </div>
+                        
+                        <div id="${equipment.id}-weekly" class="equipment-tab-content">
+                            <h4>Weekly Maintenance Tasks</h4>
+                            <ul class="equipment-tasks">${weeklyTasks}</ul>
+                        </div>
+                        
+                        <div id="${equipment.id}-monthly" class="equipment-tab-content">
+                            <h4>Monthly Maintenance Tasks</h4>
+                            <ul class="equipment-tasks">${monthlyTasks}</ul>
+                        </div>
+                        
+                        <div id="${equipment.id}-safety" class="equipment-tab-content">
+                            <h4>Safety Notes</h4>
+                            <ul class="equipment-safety">${safetyNotes}</ul>
                         </div>
                     </div>
-                    <span class="accordion-arrow">▼</span>
                 </div>
-                <div class="equipment-content" id="content-${index}">
-                    <div class="equipment-detail">
-                        <h4>📋 Operating Instructions</h4>
-                        <ol>
-                            ${item.operatingSteps.map(step => `<li>${step}</li>`).join('')}
-                        </ol>
-                    </div>
-                    <div class="equipment-detail">
-                        <h4>🧹 Daily Maintenance</h4>
-                        <ul>
-                            ${item.dailyCleaning.map(task => `<li>${task}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="equipment-detail">
-                        <h4>🔧 Weekly Maintenance</h4>
-                        <ul>
-                            ${item.weeklyMaintenance.map(task => `<li>${task}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="equipment-detail">
-                        <h4>🔧 Monthly Maintenance</h4>
-                        <ul>
-                            ${item.monthlyMaintenance.map(task => `<li>${task}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="equipment-detail">
-                        <h4>⚠️ Safety Warnings</h4>
-                        <ul>
-                            ${item.safetyNotes.map(warning => `<li>${warning}</li>`).join('')}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
         
-        // Fixed accordion click handler
-        accordion.addEventListener('click', (e) => {
-            if (e.target.matches('.equipment-header') || e.target.closest('.equipment-header')) {
-                e.preventDefault();
-                const header = e.target.matches('.equipment-header') ? e.target : e.target.closest('.equipment-header');
-                const equipmentId = header.getAttribute('data-equipment');
-                const content = document.getElementById(`content-${equipmentId}`);
-                const arrow = header.querySelector('.accordion-arrow');
-                
-                if (content && arrow) {
-                    const isActive = content.classList.contains('active');
-                    content.classList.toggle('active');
-                    arrow.textContent = isActive ? '▼' : '▲';
-                    console.log('Equipment accordion toggled:', equipmentId, !isActive);
-                }
+        equipmentAccordion.innerHTML = equipmentHTML;
+        console.log('Equipment accordion populated');
+    }
+
+    toggleEquipment(equipmentId) {
+        const content = document.getElementById(`${equipmentId}-content`);
+        const header = content.previousElementSibling;
+        const arrow = header.querySelector('.accordion-arrow');
+        
+        if (content.classList.contains('active')) {
+            content.classList.remove('active');
+            arrow.textContent = '▶';
+        } else {
+            // Close all other equipment items
+            document.querySelectorAll('.equipment-content.active').forEach(item => {
+                item.classList.remove('active');
+                item.previousElementSibling.querySelector('.accordion-arrow').textContent = '▶';
+            });
+            
+            content.classList.add('active');
+            arrow.textContent = '▼';
+        }
+    }
+
+    showEquipmentTab(equipmentId, tabType) {
+        // Update tab buttons
+        const tabButtons = document.querySelectorAll(`#${equipmentId}-content .eq-tab`);
+        tabButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.textContent.toLowerCase().includes(tabType)) {
+                btn.classList.add('active');
             }
         });
+        
+        // Update tab content
+        const tabContents = document.querySelectorAll(`#${equipmentId}-content .equipment-tab-content`);
+        tabContents.forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        const activeTab = document.getElementById(`${equipmentId}-${tabType}`);
+        if (activeTab) {
+            activeTab.classList.add('active');
+        }
     }
 
     setupSafetySystem() {
-        this.setupSafetyTabs();
-        this.setupCheckboxHandlers();
-    }
-
-    setupSafetyTabs() {
-        document.addEventListener('click', (e) => {
-            if (e.target.matches('.safety-tab[data-safety]') || e.target.closest('.safety-tab[data-safety]')) {
-                e.preventDefault();
-                const btn = e.target.matches('.safety-tab[data-safety]') ? e.target : e.target.closest('.safety-tab[data-safety]');
-                const targetTab = btn.getAttribute('data-safety');
-                this.showSafetyTab(targetTab);
-            }
-        });
-    }
-
-    showSafetyTab(tabId) {
-        const safetyTabs = document.querySelectorAll('.safety-tab[data-safety]');
-        const safetyContents = document.querySelectorAll('.safety-content');
+        console.log('Setting up safety system...');
         
+        // Setup safety tab switching
+        const safetyTabs = document.querySelectorAll('.safety-tab');
         safetyTabs.forEach(tab => {
-            tab.classList.toggle('active', tab.getAttribute('data-safety') === tabId);
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const safetyType = tab.getAttribute('data-safety');
+                this.showSafetyTab(safetyType);
+            });
         });
         
+        // Populate safety content based on data
+        this.populateSafetyContent();
+        
+        console.log('Safety system ready');
+    }
+
+    populateSafetyContent() {
+        // This method would populate safety content based on this.appData.safety
+        // For now, the content is already in HTML, but this could be dynamic
+    }
+
+    showSafetyTab(safetyType) {
+        console.log('Showing safety tab:', safetyType);
+        
+        // Update tab buttons
+        const safetyTabs = document.querySelectorAll('.safety-tab');
+        safetyTabs.forEach(tab => {
+            if (tab.getAttribute('data-safety') === safetyType) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+        
+        // Show/hide content
+        const safetyContents = document.querySelectorAll('.safety-content');
         safetyContents.forEach(content => {
-            if (content.id === `${tabId}-safety`) {
-                content.style.display = 'block';
+            if (content.id === `${safetyType}-safety`) {
                 content.classList.add('active');
+                content.style.display = 'block';
             } else {
-                content.style.display = 'none';
                 content.classList.remove('active');
+                content.style.display = 'none';
             }
         });
         
-        this.currentSafetyTab = tabId;
-    }
-
-    setupCheckboxHandlers() {
-        document.addEventListener('change', (e) => {
-            if (e.target.type === 'checkbox') {
-                const category = e.target.dataset.category || 'general';
-                const index = e.target.dataset.index || e.target.closest('label').textContent;
-                const isChecked = e.target.checked;
-                
-                const key = `${category}-${index}`;
-                this.checkboxStates.set(key, isChecked);
-                
-                this.updateCheckboxStyle(e.target, isChecked);
-            }
-        });
-    }
-
-    updateCheckboxStyle(checkbox, checked) {
-        const label = checkbox.closest('label');
-        if (label) {
-            if (checked) {
-                label.style.textDecoration = 'line-through';
-                label.style.opacity = '0.7';
-                label.style.background = 'rgba(var(--color-success-rgb), 0.1)';
-            } else {
-                label.style.textDecoration = 'none';
-                label.style.opacity = '1';
-                label.style.background = 'transparent';
-            }
-        }
+        this.currentSafetyTab = safetyType;
     }
 
     setupBulkPrep() {
-        this.setupBulkCalculator();
-        this.setupDownloadCSV();
-    }
-
-    setupBulkCalculator() {
-        const originalServes = document.getElementById('original-serves');
-        const targetServes = document.getElementById('target-serves');
-        const multiplierValue = document.getElementById('multiplier-value');
+        console.log('Setting up bulk preparation system...');
+        
+        // Setup bulk recipe scaling
         const bulkRecipeSelect = document.getElementById('bulk-recipe-select');
-
-        if (originalServes && targetServes && multiplierValue) {
+        const targetServesSelect = document.getElementById('target-serves');
+        const originalServesInput = document.getElementById('original-serves');
+        
+        if (bulkRecipeSelect && targetServesSelect) {
+            // Update multiplier when inputs change
             const updateMultiplier = () => {
-                const original = parseInt(originalServes.value) || 1;
-                const target = parseInt(targetServes.value) || 1;
-                const multiplier = target / original;
-                multiplierValue.textContent = `${multiplier}x`;
-                this.updateScaledRecipe();
+                const targetServes = parseInt(targetServesSelect.value) || 25;
+                const originalServes = parseInt(originalServesInput.value) || 1;
+                const multiplier = targetServes / originalServes;
+                document.getElementById('multiplier-value').textContent = `${multiplier}x`;
             };
-
-            originalServes.addEventListener('input', updateMultiplier);
-            targetServes.addEventListener('change', updateMultiplier);
             
-            if (bulkRecipeSelect) {
-                bulkRecipeSelect.addEventListener('change', () => this.updateScaledRecipe());
-            }
+            targetServesSelect.addEventListener('change', updateMultiplier);
+            originalServesInput.addEventListener('input', updateMultiplier);
             
-            updateMultiplier();
+            // Handle recipe selection and scaling
+            bulkRecipeSelect.addEventListener('change', (e) => {
+                const recipeId = e.target.value;
+                if (recipeId) {
+                    this.calculateBulkRecipe(recipeId);
+                }
+            });
         }
+        
+        // Setup CSV download
+        const downloadBtn = document.getElementById('download-csv');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', () => {
+                this.downloadPrepSheetCSV();
+            });
+        }
+        
+        console.log('Bulk preparation system ready');
     }
 
-    updateRecipeSelects() {
-        const bulkSelect = document.getElementById('bulk-recipe-select');
-        const costSelect = document.getElementById('cost-recipe-select');
-        
-        const options = this.appData.recipes.map(recipe => 
-            `<option value="${recipe.id}">${recipe.name}</option>`
-        ).join('');
-        
-        if (bulkSelect) {
-            bulkSelect.innerHTML = '<option value="">Choose a recipe...</option>' + options;
-        }
-        
-        if (costSelect) {
-            costSelect.innerHTML = '<option value="">Choose a recipe...</option>' + options;
-        }
-    }
-
-    updateScaledRecipe() {
-        const bulkRecipeSelect = document.getElementById('bulk-recipe-select');
-        const originalServes = document.getElementById('original-serves');
-        const targetServes = document.getElementById('target-serves');
-        const scaledIngredients = document.getElementById('scaled-ingredients');
-        
-        if (!bulkRecipeSelect || !scaledIngredients) return;
-        
-        const recipeId = bulkRecipeSelect.value;
-        if (!recipeId) {
-            scaledIngredients.innerHTML = 'Select a recipe to see scaled ingredients';
-            return;
-        }
-        
+    calculateBulkRecipe(recipeId) {
         const recipe = this.appData.recipes.find(r => r.id === recipeId);
         if (!recipe) return;
         
-        const original = parseInt(originalServes.value) || 1;
-        const target = parseInt(targetServes.value) || 1;
-        const multiplier = target / original;
+        const targetServes = parseInt(document.getElementById('target-serves').value) || 25;
+        const originalServes = parseInt(document.getElementById('original-serves').value) || 1;
+        const multiplier = targetServes / originalServes;
         
-        const scaledList = recipe.ingredients.map(ingredient => {
-            const scaled = ingredient.replace(/(\d+)/g, (match) => {
-                const num = parseInt(match);
-                return Math.round(num * multiplier);
-            });
-            return `<div class="ingredient-item"><span>${scaled}</span></div>`;
+        const scaledResults = document.getElementById('scaled-recipe');
+        const scaledIngredients = document.getElementById('scaled-ingredients');
+        
+        const ingredientsList = recipe.ingredients.map(ingredient => {
+            // Extract number and scale it
+            const match = ingredient.match(/(\d+(?:\.\d+)?)\s*([a-zA-Z]+)\s+(.*)/);
+            if (match) {
+                const [, amount, unit, item] = match;
+                const scaledAmount = (parseFloat(amount) * multiplier).toFixed(1);
+                return `<li>${scaledAmount} ${unit} ${item}</li>`;
+            } else {
+                return `<li>${ingredient} (multiply by ${multiplier})</li>`;
+            }
         }).join('');
         
-        scaledIngredients.innerHTML = scaledList || 'No ingredients to scale';
+        scaledIngredients.innerHTML = `
+            <ul class="scaled-ingredients-list">
+                ${ingredientsList}
+            </ul>
+            <div class="bulk-info">
+                <p><strong>Original Recipe:</strong> ${originalServes} portion(s)</p>
+                <p><strong>Scaled Recipe:</strong> ${targetServes} portions</p>
+                <p><strong>Multiplier:</strong> ${multiplier}x</p>
+                <p><strong>Estimated Cost:</strong> ₹${(recipe.costINR * multiplier).toFixed(2)}</p>
+                <p><strong>Estimated Time:</strong> ${Math.ceil(recipe.cookTimeMin * Math.log(multiplier + 1))} minutes</p>
+            </div>
+        `;
+        
+        scaledResults.style.display = 'block';
     }
 
-    setupDownloadCSV() {
-        const downloadBtn = document.getElementById('download-csv');
-        if (downloadBtn) {
-            downloadBtn.addEventListener('click', () => this.downloadPrepSheet());
-        }
-    }
-
-    downloadPrepSheet() {
+    downloadPrepSheetCSV() {
         const csvContent = [
-            ['Item', 'Quantity', 'Prep Date', 'Use By Date', 'Storage Location', 'Staff Initials'],
-            ['Pizza Sauce', '5L batch', '', '', 'Walk-in Cooler', ''],
-            ['Burger Patties', '50 pieces', '', '', 'Freezer', ''],
-            ['Sandwich Fillings', '3kg mixed', '', '', 'Prep Cooler', ''],
-            ['Cheese Grated', '2kg mozzarella', '', '', 'Dairy Cooler', ''],
-            ['Vegetables Prepped', '5kg mixed', '', '', 'Produce Cooler', ''],
-            ['Tikki Mixture', '3kg batch', '', '', 'Prep Cooler', ''],
-            ['Marinades', '2L mixed', '', '', 'Sauce Station', ''],
-            ['Bread Stock', '100 pieces', '', '', 'Dry Storage', '']
+            ['Item Name', 'Prep Date', 'Use By Date', 'Storage Temp', 'Staff Initials'],
+            ['Pizza Sauce', '', '', '4°C', ''],
+            ['Grated Cheese', '', '', '4°C', ''],
+            ['Chopped Vegetables', '', '', '4°C', ''],
+            ['Burger Patties', '', '', '-18°C', ''],
+            ['Sandwich Fillings', '', '', '4°C', '']
         ];
         
-        const csv = csvContent.map(row => row.join(',')).join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
+        const csvString = csvContent.map(row => row.join(',')).join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         
         const a = document.createElement('a');
         a.href = url;
-        a.download = `paradise-cafe-prep-sheet-${new Date().toISOString().split('T')[0]}.csv`;
+        a.download = 'bulk_prep_sheet.csv';
         a.click();
         
         URL.revokeObjectURL(url);
     }
 
     setupMaintenance() {
-        this.setupMaintenanceTabs();
-        this.populateMaintenanceTasks();
-        this.setupPrintButtons();
-    }
-
-    setupMaintenanceTabs() {
-        document.addEventListener('click', (e) => {
-            if (e.target.matches('.maintenance-btn[data-period]') || e.target.closest('.maintenance-btn[data-period]')) {
+        console.log('Setting up maintenance system...');
+        
+        // Setup maintenance period switching
+        const maintenanceBtns = document.querySelectorAll('.maintenance-btn');
+        maintenanceBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const btn = e.target.matches('.maintenance-btn[data-period]') ? e.target : e.target.closest('.maintenance-btn[data-period]');
-                const targetPeriod = btn.getAttribute('data-period');
-                this.showMaintenancePeriod(targetPeriod);
-            }
-        });
-    }
-
-    showMaintenancePeriod(periodId) {
-        const maintenanceButtons = document.querySelectorAll('.maintenance-btn[data-period]');
-        const maintenanceContents = document.querySelectorAll('.maintenance-content');
-        
-        maintenanceButtons.forEach(btn => {
-            btn.classList.toggle('active', btn.getAttribute('data-period') === periodId);
+                const period = btn.getAttribute('data-period');
+                this.showMaintenancePeriod(period);
+            });
         });
         
-        maintenanceContents.forEach(content => {
-            if (content.id === `${periodId}-maintenance`) {
-                content.style.display = 'block';
-                content.classList.add('active');
-            } else {
-                content.style.display = 'none';
-                content.classList.remove('active');
-            }
-        });
+        // Populate maintenance tasks
+        this.populateMaintenanceTasks();
         
-        this.currentMaintenancePeriod = periodId;
+        // Setup print functionality
+        this.setupMaintenancePrint();
+        
+        console.log('Maintenance system ready');
     }
 
     populateMaintenanceTasks() {
-        const dailyGrid = document.getElementById('daily-maintenance-grid');
-        const weeklyGrid = document.getElementById('weekly-maintenance-grid');
-        const monthlyGrid = document.getElementById('monthly-maintenance-grid');
+        const periods = ['daily', 'weekly', 'monthly'];
         
-        if (dailyGrid) {
-            dailyGrid.innerHTML = this.createMaintenanceCards(this.appData.maintenance.daily, 'Daily');
-        }
-        if (weeklyGrid) {
-            weeklyGrid.innerHTML = this.createMaintenanceCards(this.appData.maintenance.weekly, 'Weekly');
-        }
-        if (monthlyGrid) {
-            monthlyGrid.innerHTML = this.createMaintenanceCards(this.appData.maintenance.monthly, 'Monthly');
-        }
-    }
-
-    createMaintenanceCards(tasks, frequency) {
-        return `
-            <div class="maintenance-card">
-                <h4>${frequency} Tasks</h4>
-                <div class="maintenance-checklist">
-                    ${tasks.map((task, index) => `
-                        <label>
-                            <input type="checkbox" data-category="maintenance-${frequency.toLowerCase()}" data-index="${index}">
-                            ${task}
-                        </label>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    setupPrintButtons() {
-        const printButtons = document.querySelectorAll('[id^="print-"][id$="-checklist"]');
-        printButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                window.print();
-            });
+        periods.forEach(period => {
+            const grid = document.getElementById(`${period}-maintenance-grid`);
+            if (grid && this.appData.maintenance[period]) {
+                const tasksHTML = this.appData.maintenance[period].map((task, index) => {
+                    const taskId = `${period}_task_${index}`;
+                    const isChecked = this.checkboxStates.get(taskId) ? 'checked' : '';
+                    
+                    return `
+                        <div class="maintenance-task">
+                            <label class="task-label">
+                                <input type="checkbox" 
+                                       id="${taskId}" 
+                                       ${isChecked}
+                                       onchange="app.updateTaskStatus('${taskId}', this.checked)">
+                                <span class="checkmark"></span>
+                                <span class="task-text">${task}</span>
+                            </label>
+                            <div class="task-status ${isChecked ? 'completed' : 'pending'}">
+                                ${isChecked ? '✅ Completed' : '⏳ Pending'}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                grid.innerHTML = tasksHTML;
+            }
         });
     }
 
+    updateTaskStatus(taskId, isChecked) {
+        this.checkboxStates.set(taskId, isChecked);
+        
+        // Update visual status
+        const checkbox = document.getElementById(taskId);
+        const taskDiv = checkbox.closest('.maintenance-task');
+        const statusDiv = taskDiv.querySelector('.task-status');
+        
+        if (isChecked) {
+            statusDiv.className = 'task-status completed';
+            statusDiv.textContent = '✅ Completed';
+        } else {
+            statusDiv.className = 'task-status pending';
+            statusDiv.textContent = '⏳ Pending';
+        }
+    }
+
+    showMaintenancePeriod(period) {
+        console.log('Showing maintenance period:', period);
+        
+        // Update button states
+        const maintenanceBtns = document.querySelectorAll('.maintenance-btn');
+        maintenanceBtns.forEach(btn => {
+            if (btn.getAttribute('data-period') === period) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
+        // Show/hide content
+        const maintenanceContents = document.querySelectorAll('.maintenance-content');
+        maintenanceContents.forEach(content => {
+            if (content.id === `${period}-maintenance`) {
+                content.classList.add('active');
+                content.style.display = 'block';
+            } else {
+                content.classList.remove('active');
+                content.style.display = 'none';
+            }
+        });
+        
+        this.currentMaintenancePeriod = period;
+    }
+
+    setupMaintenancePrint() {
+        const printButtons = ['daily', 'weekly', 'monthly'].map(period => 
+            document.getElementById(`print-${period}-checklist`)
+        );
+        
+        printButtons.forEach((btn, index) => {
+            if (btn) {
+                const period = ['daily', 'weekly', 'monthly'][index];
+                btn.addEventListener('click', () => {
+                    this.printMaintenanceChecklist(period);
+                });
+            }
+        });
+    }
+
+    printMaintenanceChecklist(period) {
+        const tasks = this.appData.maintenance[period];
+        const printWindow = window.open('', '', 'width=800,height=600');
+        
+        const printContent = `
+            <html>
+            <head>
+                <title>Paradise Bakes & Cafe - ${period.charAt(0).toUpperCase() + period.slice(1)} Maintenance Checklist</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    h1 { color: #d84315; }
+                    .task { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+                    .checkbox { width: 20px; height: 20px; margin-right: 10px; }
+                    @media print { .no-print { display: none; } }
+                </style>
+            </head>
+            <body>
+                <h1>🌴 Paradise Bakes & Cafe</h1>
+                <h2>${period.charAt(0).toUpperCase() + period.slice(1)} Maintenance Checklist</h2>
+                <p>Date: ________________ Staff: ________________</p>
+                ${tasks.map(task => `
+                    <div class="task">
+                        <input type="checkbox" class="checkbox"> ${task}
+                    </div>
+                `).join('')}
+                <br>
+                <p>Completed by: ________________ Date: ________________</p>
+                <button class="no-print" onclick="window.print()">Print</button>
+            </body>
+            </html>
+        `;
+        
+        printWindow.document.write(printContent);
+        printWindow.document.close();
+        printWindow.focus();
+    }
+
     setupEmergency() {
+        console.log('Setting up emergency procedures...');
+        
+        // Populate emergency procedures
         this.populateEmergencyProcedures();
+        
+        // Setup emergency contact clicking
         this.setupEmergencyContacts();
+        
+        console.log('Emergency procedures ready');
     }
 
     populateEmergencyProcedures() {
-        const fireSteps = document.getElementById('fire-steps');
-        const electricalSteps = document.getElementById('electrical-steps');
-        const injurySteps = document.getElementById('injury-steps');
-        const equipmentSteps = document.getElementById('equipment-steps');
+        const emergencyTypes = ['fire', 'electrical', 'medical', 'equipment'];
         
-        if (fireSteps) {
-            fireSteps.innerHTML = this.appData.emergency.fire.map((step, index) => `
-                <div class="procedure-step">
-                    <div class="step-number">${index + 1}</div>
-                    <div class="step-text">${step}</div>
-                </div>
-            `).join('');
-        }
-        
-        if (electricalSteps) {
-            electricalSteps.innerHTML = this.appData.emergency.electrical.map((step, index) => `
-                <div class="procedure-step">
-                    <div class="step-number">${index + 1}</div>
-                    <div class="step-text">${step}</div>
-                </div>
-            `).join('');
-        }
-        
-        if (injurySteps) {
-            injurySteps.innerHTML = this.appData.emergency.medical.map((step, index) => `
-                <div class="procedure-step">
-                    <div class="step-number">${index + 1}</div>
-                    <div class="step-text">${step}</div>
-                </div>
-            `).join('');
-        }
-        
-        if (equipmentSteps) {
-            equipmentSteps.innerHTML = this.appData.emergency.equipment.map((step, index) => `
-                <div class="procedure-step">
-                    <div class="step-number">${index + 1}</div>
-                    <div class="step-text">${step}</div>
-                </div>
-            `).join('');
-        }
+        emergencyTypes.forEach(type => {
+            const stepsContainer = document.getElementById(`${type}-steps`);
+            if (stepsContainer && this.appData.emergency[type]) {
+                const stepsHTML = this.appData.emergency[type].map((step, index) => `
+                    <div class="procedure-step">
+                        <div class="step-number">${index + 1}</div>
+                        <div class="step-text">${step}</div>
+                    </div>
+                `).join('');
+                
+                stepsContainer.innerHTML = stepsHTML;
+            }
+        });
     }
 
     setupEmergencyContacts() {
-        document.querySelectorAll('.emergency-contact').forEach(contact => {
+        const emergencyContacts = document.querySelectorAll('.emergency-contact');
+        emergencyContacts.forEach(contact => {
             contact.addEventListener('click', () => {
-                const number = contact.dataset.number || contact.querySelector('.contact-number').textContent;
-                if (confirm(`Call ${number}? This will open your phone app.`)) {
-                    window.location.href = `tel:${number}`;
+                const number = contact.getAttribute('data-number');
+                if (number) {
+                    // In a real app, this would make a call
+                    alert(`Emergency Call: ${number}`);
+                    console.log(`Emergency call initiated: ${number}`);
                 }
             });
         });
@@ -971,738 +1070,683 @@ class ParadiseCafeApp {
 
     setupUtilityPanel() {
         console.log('Setting up utility panel...');
-        this.setupTimerWidget();
-        this.setupSearchWidget();
-        this.setupConverterWidget();
-        this.setupCostCalculator();
-        this.setupUtilityButtons();
-    }
-
-    setupUtilityButtons() {
-        console.log('Setting up utility button handlers...');
         
-        // Fixed utility button event handlers
-        document.addEventListener('click', (e) => {
-            // Timer button
-            if (e.target.matches('#utility-timer-btn') || e.target.closest('#utility-timer-btn')) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Timer button clicked');
-                this.toggleOverlay('timer-overlay');
-                return;
-            }
-            
-            // Search button
-            if (e.target.matches('#utility-search-btn') || e.target.closest('#utility-search-btn')) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Search button clicked');
-                this.toggleOverlay('search-overlay');
-                return;
-            }
-            
-            // Converter button
-            if (e.target.matches('#utility-converter-btn') || e.target.closest('#utility-converter-btn')) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Converter button clicked');
-                this.toggleOverlay('converter-overlay');
-                return;
-            }
-            
-            // Cost calculator button
-            if (e.target.matches('#utility-cost-btn') || e.target.closest('#utility-cost-btn')) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Cost button clicked');
-                this.toggleOverlay('cost-overlay');
-                return;
-            }
-            
-            // Close widget buttons
-            if (e.target.matches('.close-widget') || e.target.closest('.close-widget')) {
-                e.preventDefault();
-                e.stopPropagation();
-                const btn = e.target.matches('.close-widget') ? e.target : e.target.closest('.close-widget');
-                const target = btn.getAttribute('data-target');
-                console.log('Close button clicked for:', target);
-                this.hideOverlay(target);
-                return;
+        // Setup utility button toggles
+        const utilityBtns = {
+            'utility-timer-btn': 'timer-overlay',
+            'utility-search-btn': 'search-overlay',
+            'utility-converter-btn': 'converter-overlay',
+            'utility-cost-btn': 'cost-overlay'
+        };
+        
+        Object.entries(utilityBtns).forEach(([btnId, overlayId]) => {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    this.toggleOverlay(overlayId);
+                });
             }
         });
         
-        // Close on overlay click
-        document.querySelectorAll('.timer-overlay, .search-overlay, .converter-overlay, .cost-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    this.hideOverlay(overlay.id);
+        // Setup overlay close buttons
+        document.querySelectorAll('.close-widget').forEach(closeBtn => {
+            closeBtn.addEventListener('click', (e) => {
+                const targetOverlay = e.target.getAttribute('data-target');
+                if (targetOverlay) {
+                    this.closeOverlay(targetOverlay);
                 }
             });
         });
         
-        console.log('Utility buttons configured');
+        // Setup utility functions
+        this.setupTimerSystem();
+        this.setupSearchSystem();
+        this.setupConverterSystem();
+        this.setupCostCalculator();
+        
+        console.log('Utility panel ready');
     }
 
     toggleOverlay(overlayId) {
-        console.log('Toggling overlay:', overlayId);
         const overlay = document.getElementById(overlayId);
         if (overlay) {
-            const isHidden = overlay.classList.contains('hidden');
-            
-            // Hide all overlays first
-            document.querySelectorAll('.timer-overlay, .search-overlay, .converter-overlay, .cost-overlay').forEach(o => {
-                o.classList.add('hidden');
-            });
-            
-            // Show the target overlay if it was hidden
-            if (isHidden) {
-                overlay.classList.remove('hidden');
-                console.log('Overlay shown:', overlayId);
-                
-                // Focus search input if it's the search overlay
-                if (overlayId === 'search-overlay') {
-                    setTimeout(() => {
-                        const searchInput = document.getElementById('global-search-input');
-                        if (searchInput) searchInput.focus();
-                    }, 100);
-                }
-            } else {
-                console.log('Overlay was already visible, now hidden:', overlayId);
-            }
-        } else {
-            console.error('Overlay not found:', overlayId);
+            overlay.classList.toggle('hidden');
         }
     }
 
-    hideOverlay(overlayId) {
+    closeOverlay(overlayId) {
         const overlay = document.getElementById(overlayId);
         if (overlay) {
             overlay.classList.add('hidden');
-            console.log('Overlay hidden:', overlayId);
         }
     }
 
-    setupTimerWidget() {
-        const createBtn = document.getElementById('quick-create-timer');
-        
-        if (createBtn) {
-            createBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.createQuickTimer();
+    setupTimerSystem() {
+        const addTimerBtn = document.getElementById('quick-create-timer');
+        if (addTimerBtn) {
+            addTimerBtn.addEventListener('click', () => {
+                this.addQuickTimer();
             });
         }
-        
-        this.updateTimerWidget();
     }
 
-    createQuickTimer() {
+    addQuickTimer() {
         const nameInput = document.getElementById('quick-timer-name');
         const minutesInput = document.getElementById('quick-timer-minutes');
         const secondsInput = document.getElementById('quick-timer-seconds');
         
-        const name = nameInput?.value.trim() || 'Quick Timer';
-        const minutes = parseInt(minutesInput?.value) || 0;
-        const seconds = parseInt(secondsInput?.value) || 0;
+        const name = nameInput.value || 'Kitchen Timer';
+        const minutes = parseInt(minutesInput.value) || 0;
+        const seconds = parseInt(secondsInput.value) || 0;
         
-        if (minutes === 0 && seconds === 0) {
-            alert('Please enter a valid time duration');
-            return;
-        }
+        if (minutes === 0 && seconds === 0) return;
         
-        const totalSeconds = (minutes * 60) + seconds;
-        const timerId = ++this.timerIdCounter;
+        const totalSeconds = minutes * 60 + seconds;
+        const timerId = `timer_${this.timerIdCounter++}`;
         
         const timer = {
             id: timerId,
             name: name,
             totalSeconds: totalSeconds,
             remainingSeconds: totalSeconds,
-            isRunning: false,
-            isFinished: false,
-            interval: null
+            interval: null,
+            isRunning: false
         };
         
         this.activeTimers.set(timerId, timer);
-        this.updateTimerWidget();
+        this.renderActiveTimers();
         
-        if (nameInput) nameInput.value = '';
-        if (minutesInput) minutesInput.value = '';
-        if (secondsInput) secondsInput.value = '';
-        
-        this.startTimer(timerId);
+        // Clear inputs
+        nameInput.value = '';
+        minutesInput.value = '';
+        secondsInput.value = '';
     }
 
-    updateTimerWidget() {
-        const widget = document.getElementById('active-timers-widget');
-        if (!widget) return;
+    renderActiveTimers() {
+        const container = document.getElementById('active-timers-widget');
+        if (!container) return;
         
         if (this.activeTimers.size === 0) {
-            widget.innerHTML = '<div class="no-timers">No active timers</div>';
+            container.innerHTML = '<div class="no-timers">No active timers</div>';
             return;
         }
         
-        widget.innerHTML = Array.from(this.activeTimers.values())
-            .map(timer => this.createTimerWidgetItem(timer))
-            .join('');
-    }
-
-    createTimerWidgetItem(timer) {
-        const minutes = Math.floor(timer.remainingSeconds / 60);
-        const seconds = timer.remainingSeconds % 60;
-        const timeDisplay = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        
-        let statusClass = '';
-        if (timer.isFinished) statusClass = 'finished';
-        else if (timer.isRunning) statusClass = 'running';
-        
-        return `
-            <div class="timer-item-widget ${statusClass}">
-                <div class="timer-widget-header">
-                    <span class="timer-widget-name">${timer.name}</span>
-                    <button class="btn btn--sm" onclick="app.deleteTimer(${timer.id})">×</button>
-                </div>
-                <div class="timer-widget-display">${timer.isFinished ? 'TIME UP!' : timeDisplay}</div>
-                <div class="timer-widget-controls">
-                    ${timer.isFinished ? 
-                        `<button class="btn btn--sm" onclick="app.resetTimer(${timer.id})">Reset</button>` :
-                        `<button class="btn btn--primary btn--sm" onclick="app.${timer.isRunning ? 'pauseTimer' : 'startTimer'}(${timer.id})">
-                            ${timer.isRunning ? 'Pause' : 'Start'}
+        const timersHTML = Array.from(this.activeTimers.values()).map(timer => {
+            const minutes = Math.floor(timer.remainingSeconds / 60);
+            const seconds = timer.remainingSeconds % 60;
+            const timeDisplay = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            return `
+                <div class="active-timer" data-timer-id="${timer.id}">
+                    <div class="timer-name">${timer.name}</div>
+                    <div class="timer-display">${timeDisplay}</div>
+                    <div class="timer-controls">
+                        <button onclick="app.toggleTimer('${timer.id}')" class="timer-toggle">
+                            ${timer.isRunning ? '⏸️' : '▶️'}
                         </button>
-                        <button class="btn btn--sm" onclick="app.resetTimer(${timer.id})">Reset</button>`
-                    }
+                        <button onclick="app.resetTimer('${timer.id}')" class="timer-reset">🔄</button>
+                        <button onclick="app.removeTimer('${timer.id}')" class="timer-remove">❌</button>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }).join('');
+        
+        container.innerHTML = timersHTML;
     }
 
-    startTimer(timerId) {
+    toggleTimer(timerId) {
         const timer = this.activeTimers.get(timerId);
-        if (!timer || timer.isRunning || timer.isFinished) return;
+        if (!timer) return;
         
-        timer.isRunning = true;
-        timer.interval = setInterval(() => {
-            timer.remainingSeconds--;
-            
-            if (timer.remainingSeconds <= 0) {
-                timer.remainingSeconds = 0;
-                timer.isRunning = false;
-                timer.isFinished = true;
-                clearInterval(timer.interval);
-                this.showTimerNotification(timer.name);
-            }
-            
-            this.updateTimerWidget();
-        }, 1000);
+        if (timer.isRunning) {
+            clearInterval(timer.interval);
+            timer.isRunning = false;
+        } else {
+            timer.interval = setInterval(() => {
+                timer.remainingSeconds--;
+                
+                if (timer.remainingSeconds <= 0) {
+                    this.timerComplete(timerId);
+                }
+                
+                this.renderActiveTimers();
+            }, 1000);
+            timer.isRunning = true;
+        }
         
-        this.updateTimerWidget();
-    }
-
-    pauseTimer(timerId) {
-        const timer = this.activeTimers.get(timerId);
-        if (!timer || !timer.isRunning) return;
-        
-        timer.isRunning = false;
-        clearInterval(timer.interval);
-        this.updateTimerWidget();
+        this.renderActiveTimers();
     }
 
     resetTimer(timerId) {
         const timer = this.activeTimers.get(timerId);
         if (!timer) return;
         
-        timer.isRunning = false;
-        timer.isFinished = false;
-        timer.remainingSeconds = timer.totalSeconds;
         if (timer.interval) {
             clearInterval(timer.interval);
         }
-        this.updateTimerWidget();
+        
+        timer.remainingSeconds = timer.totalSeconds;
+        timer.isRunning = false;
+        this.renderActiveTimers();
     }
 
-    deleteTimer(timerId) {
+    removeTimer(timerId) {
+        const timer = this.activeTimers.get(timerId);
+        if (timer && timer.interval) {
+            clearInterval(timer.interval);
+        }
+        
+        this.activeTimers.delete(timerId);
+        this.renderActiveTimers();
+    }
+
+    timerComplete(timerId) {
         const timer = this.activeTimers.get(timerId);
         if (!timer) return;
         
-        if (timer.interval) {
-            clearInterval(timer.interval);
-        }
-        this.activeTimers.delete(timerId);
-        this.updateTimerWidget();
-    }
-
-    showTimerNotification(timerName) {
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--color-error);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 12px;
-            z-index: 2000;
-            box-shadow: var(--shadow-lg);
-            font-weight: bold;
-            font-size: 18px;
-            animation: pulse 0.5s infinite alternate;
-            max-width: 300px;
-        `;
-        notification.innerHTML = `⏰ Timer Complete!<br><strong>${timerName}</strong><br><small>समय पूरा हो गया!</small>`;
+        clearInterval(timer.interval);
+        timer.isRunning = false;
+        timer.remainingSeconds = 0;
         
-        document.body.appendChild(notification);
+        // Show notification
+        this.showTimerNotification(timer.name);
         
+        // Auto-remove completed timer after 5 seconds
         setTimeout(() => {
-            if (notification.parentNode) notification.remove();
+            this.removeTimer(timerId);
         }, 5000);
     }
 
-    setupSearchWidget() {
+    showTimerNotification(timerName) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'timer-notification';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <h4>⏰ Timer Complete!</h4>
+                <p>${timerName}</p>
+                <button onclick="this.parentElement.parentElement.remove()">OK</button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto-remove after 10 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 10000);
+        
+        // Play notification sound (if available)
+        this.playNotificationSound();
+    }
+
+    playNotificationSound() {
+        // Create audio context for notification sound
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.5);
+        } catch (e) {
+            console.log('Audio notification not available');
+        }
+    }
+
+    setupSearchSystem() {
         const searchInput = document.getElementById('global-search-input');
-        const categorySelect = document.getElementById('search-category');
+        const searchCategory = document.getElementById('search-category');
         
         if (searchInput) {
-            searchInput.addEventListener('input', () => this.performGlobalSearch());
+            searchInput.addEventListener('input', () => {
+                this.performGlobalSearch();
+            });
         }
         
-        if (categorySelect) {
-            categorySelect.addEventListener('change', () => this.performGlobalSearch());
+        if (searchCategory) {
+            searchCategory.addEventListener('change', () => {
+                this.performGlobalSearch();
+            });
         }
     }
 
     performGlobalSearch() {
-        const searchTerm = document.getElementById('global-search-input')?.value.toLowerCase() || '';
-        const category = document.getElementById('search-category')?.value || '';
+        const query = document.getElementById('global-search-input').value.toLowerCase();
+        const category = document.getElementById('search-category').value;
         const resultsContainer = document.getElementById('search-results');
         
-        if (!searchTerm.trim()) {
+        if (!query.trim()) {
             resultsContainer.innerHTML = '<div class="no-results">Type to search across all content...</div>';
             return;
         }
         
-        const results = [];
+        let results = [];
         
+        // Search recipes
         if (!category || category === 'recipes') {
             this.appData.recipes.forEach(recipe => {
-                if (recipe.name.toLowerCase().includes(searchTerm) || 
-                    recipe.ingredients.some(ing => ing.toLowerCase().includes(searchTerm)) ||
-                    recipe.steps.some(step => step.toLowerCase().includes(searchTerm))) {
+                const searchText = [
+                    recipe.name,
+                    recipe.type,
+                    ...recipe.ingredients,
+                    ...recipe.steps,
+                    recipe.tips
+                ].join(' ').toLowerCase();
+                
+                if (searchText.includes(query)) {
                     results.push({
+                        type: 'recipe',
                         title: recipe.name,
-                        category: 'Recipe',
-                        snippet: `${recipe.type} • ${recipe.ingredients.slice(0, 3).join(', ')}...`,
+                        description: `${recipe.type} - ${recipe.ingredients.slice(0, 2).join(', ')}...`,
                         action: () => {
-                            this.hideOverlay('search-overlay');
                             this.showSection('recipes');
-                            this.showRecipeCategory(recipe.category.toLowerCase());
-                            setTimeout(() => this.showRecipeModal(recipe.id), 500);
+                            this.showRecipeDetail(recipe.id);
+                            this.closeOverlay('search-overlay');
                         }
                     });
                 }
             });
         }
         
+        // Search equipment
         if (!category || category === 'equipment') {
             this.appData.equipment.forEach(equipment => {
-                if (equipment.name.toLowerCase().includes(searchTerm) ||
-                    equipment.operatingSteps.some(step => step.toLowerCase().includes(searchTerm))) {
+                const searchText = [
+                    equipment.name,
+                    equipment.capacity,
+                    ...equipment.dailyCleaning,
+                    ...equipment.operatingSteps
+                ].join(' ').toLowerCase();
+                
+                if (searchText.includes(query)) {
                     results.push({
+                        type: 'equipment',
                         title: equipment.name,
-                        category: 'Equipment',
-                        snippet: equipment.operatingSteps.slice(0, 2).join(', '),
+                        description: `Capacity: ${equipment.capacity}`,
                         action: () => {
-                            this.hideOverlay('search-overlay');
                             this.showSection('equipment');
+                            this.closeOverlay('search-overlay');
                         }
                     });
                 }
             });
         }
         
-        if (!category || category === 'emergency') {
-            Object.entries(this.appData.emergency).forEach(([type, steps]) => {
-                if (type.toLowerCase().includes(searchTerm) || 
-                    steps.some(step => step.toLowerCase().includes(searchTerm))) {
-                    results.push({
-                        title: `${type.charAt(0).toUpperCase() + type.slice(1)} Emergency`,
-                        category: 'Emergency',
-                        snippet: steps[0],
-                        action: () => {
-                            this.hideOverlay('search-overlay');
-                            this.showSection('emergency');
-                        }
-                    });
-                }
-            });
-        }
-        
-        this.displaySearchResults(results);
-    }
-
-    displaySearchResults(results) {
-        const resultsContainer = document.getElementById('search-results');
-        
+        // Render results
         if (results.length === 0) {
             resultsContainer.innerHTML = '<div class="no-results">No results found</div>';
-            return;
-        }
-        
-        resultsContainer.innerHTML = results.map((result, index) => `
-            <div class="search-result-item" data-action="${index}">
-                <div class="search-result-category">${result.category}</div>
-                <div class="search-result-title">${result.title}</div>
-                <div class="search-result-snippet">${result.snippet}</div>
-            </div>
-        `).join('');
-        
-        resultsContainer.querySelectorAll('.search-result-item').forEach((item, index) => {
-            item.addEventListener('click', () => {
-                results[index].action();
+        } else {
+            const resultsHTML = results.map(result => `
+                <div class="search-result" onclick="searchResultAction_${results.indexOf(result)}()">
+                    <div class="result-type">${result.type}</div>
+                    <div class="result-title">${result.title}</div>
+                    <div class="result-description">${result.description}</div>
+                </div>
+            `).join('');
+            
+            resultsContainer.innerHTML = resultsHTML;
+            
+            // Create action functions
+            results.forEach((result, index) => {
+                window[`searchResultAction_${index}`] = result.action;
             });
-        });
+        }
     }
 
-    setupConverterWidget() {
-        const tabs = document.querySelectorAll('.converter-tab');
-        const inputs = document.querySelectorAll('#weight-input, #temp-input, #volume-input');
-        const selects = document.querySelectorAll('#weight-from, #temp-from, #volume-from');
-        
-        tabs.forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                e.preventDefault();
-                const converterType = tab.dataset.converter;
+    setupConverterSystem() {
+        // Setup converter tabs
+        const converterTabs = document.querySelectorAll('.converter-tab');
+        converterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const converterType = tab.getAttribute('data-converter');
                 this.showConverterTab(converterType);
             });
         });
         
-        inputs.forEach(input => {
-            input.addEventListener('input', () => this.performConversion());
+        // Setup conversion inputs
+        this.setupWeightConverter();
+        this.setupTemperatureConverter();
+        this.setupVolumeConverter();
+    }
+
+    showConverterTab(converterType) {
+        // Update tab buttons
+        document.querySelectorAll('.converter-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.getAttribute('data-converter') === converterType);
         });
         
-        selects.forEach(select => {
-            select.addEventListener('change', () => this.performConversion());
+        // Show/hide content
+        document.querySelectorAll('.converter-content').forEach(content => {
+            content.classList.toggle('active', content.id === `${converterType}-converter`);
         });
     }
 
-    showConverterTab(tabId) {
-        const tabs = document.querySelectorAll('.converter-tab');
-        const contents = document.querySelectorAll('.converter-content');
+    setupWeightConverter() {
+        const weightInput = document.getElementById('weight-input');
+        const weightFrom = document.getElementById('weight-from');
+        const weightResult = document.getElementById('weight-result');
         
-        tabs.forEach(tab => {
-            tab.classList.toggle('active', tab.dataset.converter === tabId);
-        });
-        
-        contents.forEach(content => {
-            content.classList.toggle('active', content.id === `${tabId}-converter`);
-        });
-    }
-
-    performConversion() {
-        const activeTab = document.querySelector('.converter-tab.active')?.dataset.converter;
-        
-        if (activeTab === 'weight') {
-            this.convertWeight();
-        } else if (activeTab === 'temp') {
-            this.convertTemperature();
-        } else if (activeTab === 'volume') {
-            this.convertVolume();
-        }
-    }
-
-    convertWeight() {
-        const input = document.getElementById('weight-input');
-        const from = document.getElementById('weight-from');
-        const result = document.getElementById('weight-result');
-        
-        const value = parseFloat(input.value);
-        if (isNaN(value)) {
-            result.textContent = 'Enter a valid number';
-            return;
-        }
-        
-        const conversions = {
-            g: { cup: 0.00423, kg: 0.001, tbsp: 0.067628, tsp: 0.202884 },
-            kg: { g: 1000, cup: 4.23, tbsp: 67.628, tsp: 202.884 },
-            cup: { g: 236.588, kg: 0.236588, tbsp: 16, tsp: 48 },
-            tbsp: { g: 14.787, kg: 0.014787, cup: 0.0625, tsp: 3 },
-            tsp: { g: 4.929, kg: 0.004929, cup: 0.0208, tbsp: 0.333 }
+        const convertWeight = () => {
+            const value = parseFloat(weightInput.value);
+            const fromUnit = weightFrom.value;
+            
+            if (isNaN(value)) {
+                weightResult.textContent = 'Enter values above';
+                return;
+            }
+            
+            const conversions = {
+                g: { g: 1, kg: 0.001, cup: 0.00423, tbsp: 0.0676, tsp: 0.203 },
+                kg: { g: 1000, kg: 1, cup: 4.23, tbsp: 67.6, tsp: 203 },
+                cup: { g: 236, kg: 0.236, cup: 1, tbsp: 16, tsp: 48 },
+                tbsp: { g: 14.8, kg: 0.0148, cup: 0.0625, tbsp: 1, tsp: 3 },
+                tsp: { g: 4.93, kg: 0.00493, cup: 0.0208, tbsp: 0.333, tsp: 1 }
+            };
+            
+            const results = Object.entries(conversions[fromUnit] || {}).map(([unit, factor]) => {
+                const convertedValue = (value * factor).toFixed(3);
+                return `${convertedValue} ${unit}`;
+            }).join(' | ');
+            
+            weightResult.textContent = results || 'Conversion not available';
         };
         
-        const fromUnit = from.value;
-        const results = [];
-        
-        Object.entries(conversions[fromUnit] || {}).forEach(([unit, multiplier]) => {
-            const converted = (value * multiplier).toFixed(2);
-            results.push(`${converted} ${unit}`);
-        });
-        
-        result.innerHTML = results.join('<br>');
-    }
-
-    convertTemperature() {
-        const input = document.getElementById('temp-input');
-        const from = document.getElementById('temp-from');
-        const result = document.getElementById('temp-result');
-        
-        const value = parseFloat(input.value);
-        if (isNaN(value)) {
-            result.textContent = 'Enter a valid temperature';
-            return;
-        }
-        
-        if (from.value === 'c') {
-            const fahrenheit = (value * 9/5) + 32;
-            result.innerHTML = `${fahrenheit.toFixed(1)}°F`;
-        } else {
-            const celsius = (value - 32) * 5/9;
-            result.innerHTML = `${celsius.toFixed(1)}°C`;
+        if (weightInput && weightFrom) {
+            weightInput.addEventListener('input', convertWeight);
+            weightFrom.addEventListener('change', convertWeight);
         }
     }
 
-    convertVolume() {
-        const input = document.getElementById('volume-input');
-        const from = document.getElementById('volume-from');
-        const result = document.getElementById('volume-result');
+    setupTemperatureConverter() {
+        const tempInput = document.getElementById('temp-input');
+        const tempFrom = document.getElementById('temp-from');
+        const tempResult = document.getElementById('temp-result');
         
-        const value = parseFloat(input.value);
-        if (isNaN(value)) {
-            result.textContent = 'Enter a valid volume';
-            return;
-        }
-        
-        const conversions = {
-            ml: { l: 0.001, cup: 0.004227, oz: 0.033814, tbsp: 0.067628, tsp: 0.202884 },
-            l: { ml: 1000, cup: 4.227, oz: 33.814, tbsp: 67.628, tsp: 202.884 },
-            cup: { ml: 236.588, l: 0.236588, oz: 8, tbsp: 16, tsp: 48 },
-            oz: { ml: 29.574, l: 0.029574, cup: 0.125, tbsp: 2, tsp: 6 },
-            tbsp: { ml: 14.787, l: 0.014787, cup: 0.0625, oz: 0.5, tsp: 3 },
-            tsp: { ml: 4.929, l: 0.004929, cup: 0.0208, oz: 0.167, tbsp: 0.333 }
+        const convertTemperature = () => {
+            const value = parseFloat(tempInput.value);
+            const fromUnit = tempFrom.value;
+            
+            if (isNaN(value)) {
+                tempResult.textContent = 'Enter temperature above';
+                return;
+            }
+            
+            let celsius, fahrenheit;
+            
+            if (fromUnit === 'c') {
+                celsius = value;
+                fahrenheit = (value * 9/5) + 32;
+            } else {
+                fahrenheit = value;
+                celsius = (value - 32) * 5/9;
+            }
+            
+            tempResult.innerHTML = `
+                ${celsius.toFixed(1)}°C | ${fahrenheit.toFixed(1)}°F
+            `;
         };
         
-        const fromUnit = from.value;
-        const results = [];
+        if (tempInput && tempFrom) {
+            tempInput.addEventListener('input', convertTemperature);
+            tempFrom.addEventListener('change', convertTemperature);
+        }
+    }
+
+    setupVolumeConverter() {
+        const volumeInput = document.getElementById('volume-input');
+        const volumeFrom = document.getElementById('volume-from');
+        const volumeResult = document.getElementById('volume-result');
         
-        Object.entries(conversions[fromUnit] || {}).forEach(([unit, multiplier]) => {
-            const converted = (value * multiplier).toFixed(2);
-            results.push(`${converted} ${unit}`);
-        });
+        const convertVolume = () => {
+            const value = parseFloat(volumeInput.value);
+            const fromUnit = volumeFrom.value;
+            
+            if (isNaN(value)) {
+                volumeResult.textContent = 'Enter volume above';
+                return;
+            }
+            
+            const conversions = {
+                ml: { ml: 1, l: 0.001, cup: 0.00423, oz: 0.0338, tbsp: 0.0676, tsp: 0.203 },
+                l: { ml: 1000, l: 1, cup: 4.23, oz: 33.8, tbsp: 67.6, tsp: 203 },
+                cup: { ml: 236, l: 0.236, cup: 1, oz: 8, tbsp: 16, tsp: 48 },
+                oz: { ml: 29.6, l: 0.0296, cup: 0.125, oz: 1, tbsp: 2, tsp: 6 },
+                tbsp: { ml: 14.8, l: 0.0148, cup: 0.0625, oz: 0.5, tbsp: 1, tsp: 3 },
+                tsp: { ml: 4.93, l: 0.00493, cup: 0.0208, oz: 0.167, tbsp: 0.333, tsp: 1 }
+            };
+            
+            const results = Object.entries(conversions[fromUnit] || {}).map(([unit, factor]) => {
+                const convertedValue = (value * factor).toFixed(3);
+                return `${convertedValue} ${unit}`;
+            }).join(' | ');
+            
+            volumeResult.textContent = results || 'Conversion not available';
+        };
         
-        result.innerHTML = results.join('<br>');
+        if (volumeInput && volumeFrom) {
+            volumeInput.addEventListener('input', convertVolume);
+            volumeFrom.addEventListener('change', convertVolume);
+        }
     }
 
     setupCostCalculator() {
-        const recipeSelect = document.getElementById('cost-recipe-select');
-        const quantityInput = document.getElementById('cost-quantity');
+        const costRecipeSelect = document.getElementById('cost-recipe-select');
+        const costQuantity = document.getElementById('cost-quantity');
+        const costBreakdown = document.getElementById('cost-breakdown');
         
-        if (recipeSelect) {
-            recipeSelect.addEventListener('change', () => this.calculateCost());
+        const calculateCost = () => {
+            const recipeId = costRecipeSelect.value;
+            const quantity = parseInt(costQuantity.value) || 1;
+            
+            if (!recipeId) {
+                costBreakdown.innerHTML = '<div class="no-selection">Select a recipe to see cost breakdown</div>';
+                return;
+            }
+            
+            const recipe = this.appData.recipes.find(r => r.id === recipeId);
+            if (!recipe) return;
+            
+            const totalCost = recipe.costINR * quantity;
+            const profitMargin = 0.4; // 40% profit margin
+            const sellingPrice = totalCost / (1 - profitMargin);
+            
+            costBreakdown.innerHTML = `
+                <div class="cost-calculation">
+                    <h4>${recipe.name}</h4>
+                    <div class="cost-line">
+                        <span>Base Cost per Unit:</span>
+                        <span>₹${recipe.costINR}</span>
+                    </div>
+                    <div class="cost-line">
+                        <span>Quantity:</span>
+                        <span>${quantity}</span>
+                    </div>
+                    <div class="cost-line total">
+                        <span>Total Cost:</span>
+                        <span>₹${totalCost.toFixed(2)}</span>
+                    </div>
+                    <div class="cost-line">
+                        <span>Suggested Selling Price (40% margin):</span>
+                        <span>₹${sellingPrice.toFixed(2)}</span>
+                    </div>
+                    <div class="cost-line profit">
+                        <span>Profit per Unit:</span>
+                        <span>₹${(sellingPrice - recipe.costINR).toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        };
+        
+        if (costRecipeSelect) {
+            costRecipeSelect.addEventListener('change', calculateCost);
         }
         
-        if (quantityInput) {
-            quantityInput.addEventListener('input', () => this.calculateCost());
+        if (costQuantity) {
+            costQuantity.addEventListener('input', calculateCost);
         }
     }
 
-    calculateCost() {
-        const recipeSelect = document.getElementById('cost-recipe-select');
-        const quantityInput = document.getElementById('cost-quantity');
-        const breakdown = document.getElementById('cost-breakdown');
-        
-        if (!recipeSelect || !quantityInput || !breakdown) return;
-        
-        const recipeId = recipeSelect.value;
-        const quantity = parseInt(quantityInput.value) || 1;
-        
-        if (!recipeId) {
-            breakdown.innerHTML = '<div class="no-selection">Select a recipe to see cost breakdown</div>';
-            return;
+    updateRecipeSelects() {
+        // Update bulk recipe select
+        const bulkSelect = document.getElementById('bulk-recipe-select');
+        if (bulkSelect) {
+            bulkSelect.innerHTML = '<option value="">Choose a recipe...</option>';
+            this.appData.recipes.forEach(recipe => {
+                const option = document.createElement('option');
+                option.value = recipe.id;
+                option.textContent = recipe.name;
+                bulkSelect.appendChild(option);
+            });
         }
         
-        const recipe = this.appData.recipes.find(r => r.id === recipeId);
-        if (!recipe || !recipe.costINR) {
-            breakdown.innerHTML = '<div class="no-selection">Cost data not available for this recipe</div>';
-            return;
+        // Update cost calculator select
+        const costSelect = document.getElementById('cost-recipe-select');
+        if (costSelect) {
+            costSelect.innerHTML = '<option value="">Choose a recipe...</option>';
+            this.appData.recipes.forEach(recipe => {
+                const option = document.createElement('option');
+                option.value = recipe.id;
+                option.textContent = recipe.name;
+                costSelect.appendChild(option);
+            });
         }
-        
-        const unitCost = recipe.costINR;
-        const totalCost = unitCost * quantity;
-        const materialCost = Math.round(totalCost * 0.65);
-        const laborCost = Math.round(totalCost * 0.25);
-        const overheadCost = Math.round(totalCost * 0.10);
-        
-        breakdown.innerHTML = `
-            <div class="cost-item">
-                <span>Material Cost:</span>
-                <span>₹${materialCost}</span>
-            </div>
-            <div class="cost-item">
-                <span>Labor Cost:</span>
-                <span>₹${laborCost}</span>
-            </div>
-            <div class="cost-item">
-                <span>Overhead Cost:</span>
-                <span>₹${overheadCost}</span>
-            </div>
-            <div class="cost-item">
-                <span>Total Cost (${quantity} qty):</span>
-                <span>₹${totalCost}</span>
-            </div>
-        `;
     }
 
     setupThemeToggle() {
         const themeToggle = document.getElementById('theme-toggle');
-        if (!themeToggle) return;
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                this.toggleTheme();
+            });
+        }
+    }
+
+    toggleTheme() {
+        this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+        document.body.classList.toggle('dark-theme', this.currentTheme === 'dark');
         
-        themeToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            const currentTheme = document.documentElement.getAttribute('data-color-scheme') || 'light';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            document.documentElement.setAttribute('data-color-scheme', newTheme);
-            this.currentTheme = newTheme;
-            
-            themeToggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
-        });
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.textContent = this.currentTheme === 'dark' ? '☀️' : '🌙';
+        }
     }
 
     setupEmergencyBanner() {
         const emergencyToggle = document.getElementById('emergency-toggle');
         const emergencyBanner = document.getElementById('emergency-banner');
-        const hideBannerBtn = document.getElementById('hide-emergency-banner');
+        const hideEmergencyBtn = document.getElementById('hide-emergency-banner');
         
         if (emergencyToggle) {
-            emergencyToggle.addEventListener('click', (e) => {
-                e.preventDefault();
+            emergencyToggle.addEventListener('click', () => {
                 this.toggleEmergencyBanner();
             });
         }
         
-        if (hideBannerBtn) {
-            hideBannerBtn.addEventListener('click', (e) => {
-                e.preventDefault();
+        if (hideEmergencyBtn) {
+            hideEmergencyBtn.addEventListener('click', () => {
                 this.hideEmergencyBanner();
             });
         }
     }
 
     toggleEmergencyBanner() {
-        const banner = document.getElementById('emergency-banner');
-        if (banner) {
+        const emergencyBanner = document.getElementById('emergency-banner');
+        if (emergencyBanner) {
             this.emergencyBannerVisible = !this.emergencyBannerVisible;
-            banner.classList.toggle('hidden', !this.emergencyBannerVisible);
-            
-            const mainNav = document.querySelector('.main-nav');
-            if (mainNav) {
-                mainNav.style.top = this.emergencyBannerVisible ? '60px' : '0';
-            }
+            emergencyBanner.classList.toggle('hidden', !this.emergencyBannerVisible);
         }
     }
 
     hideEmergencyBanner() {
-        const banner = document.getElementById('emergency-banner');
-        if (banner) {
+        const emergencyBanner = document.getElementById('emergency-banner');
+        if (emergencyBanner) {
             this.emergencyBannerVisible = false;
-            banner.classList.add('hidden');
-            
-            const mainNav = document.querySelector('.main-nav');
-            if (mainNav) {
-                mainNav.style.top = '0';
-            }
+            emergencyBanner.classList.add('hidden');
         }
     }
 
     setupScrollToTop() {
         const scrollBtn = document.getElementById('scroll-to-top');
-        if (!scrollBtn) return;
-        
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                scrollBtn.classList.remove('hidden');
-            } else {
-                scrollBtn.classList.add('hidden');
-            }
-        });
-        
-        scrollBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        if (scrollBtn) {
+            scrollBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    scrollBtn.classList.remove('hidden');
+                } else {
+                    scrollBtn.classList.add('hidden');
+                }
+            });
+        }
     }
 
     setupPWA() {
+        // Register service worker
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
+            navigator.serviceWorker.register('sw.js')
                 .then(registration => {
-                    console.log('🔧 Service Worker registered successfully');
+                    console.log('ServiceWorker registration successful');
                 })
                 .catch(error => {
-                    console.log('Service Worker registration failed:', error);
+                    console.log('ServiceWorker registration failed: ', error);
                 });
         }
+        
+        // Handle install prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button (you can add this to your UI)
+            console.log('PWA install prompt available');
+        });
     }
 }
 
-// Initialize the app and expose functions globally
-let app;
-
+// Initialize the app instance
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🌴 Paradise Bakes & Cafe Training Manual - Fixed Navigation Version');
-    app = new ParadiseCafeApp();
-    
-    // Expose app instance globally for timer controls and other functions
-    window.app = app;
-    
-    console.log('✅ All systems operational:');
-    console.log('   🧭 Fixed main navigation - all sections now work');
-    console.log('   ⏲️ Fixed utility panel - all overlays now open properly');
-    console.log('   🔧 Complete equipment guide with all 9 machines');
-    console.log('   📖 Recipe system with modal functionality');
-    console.log('   🛡️ Safety tabs now functional');
-    console.log('   📊 Bulk preparation calculator operational');
-    console.log('   📋 Maintenance schedules with checklists');
-    console.log('   🚨 Emergency procedures ready');
-    console.log('🍕🍔🥪 Professional kitchen training system fully functional!');
-});
+    console.log('🌴 Paradise Bakes & Cafe Training Manual - Loading...');
+    window.app = new ParadiseCafeApp();
 
-// Keyboard shortcuts for power users
-document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey || e.metaKey) {
-        switch(e.key) {
-            case 't':
-                e.preventDefault();
-                app?.toggleOverlay('timer-overlay');
-                break;
-            case 'f':
-                e.preventDefault();
-                app?.toggleOverlay('search-overlay');
-                break;
-            case 'u':
-                e.preventDefault();
-                app?.toggleOverlay('converter-overlay');
-                break;
-            case 'c':
-                e.preventDefault();
-                app?.toggleOverlay('cost-overlay');
-                break;
+    // Keyboard shortcuts for power users
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            switch(e.key) {
+                case 't':
+                    e.preventDefault();
+                    app?.toggleOverlay && app.toggleOverlay('timer-overlay');
+                    break;
+                case 'f':
+                    e.preventDefault();
+                    app?.toggleOverlay && app.toggleOverlay('search-overlay');
+                    break;
+                case 'u':
+                    e.preventDefault();
+                    app?.toggleOverlay && app.toggleOverlay('converter-overlay');
+                    break;
+                case 'c':
+                    e.preventDefault();
+                    app?.toggleOverlay && app.toggleOverlay('cost-overlay');
+                    break;
+            }
         }
-    }
-    
-    if (e.key === 'Escape') {
-        document.querySelectorAll('.timer-overlay, .search-overlay, .converter-overlay, .cost-overlay, .modal').forEach(overlay => {
-            overlay.classList.add('hidden');
-        });
-    }
-});
-
-// Responsive Hamburger Menu Logic
-const navToggle = document.getElementById('nav-toggle');
-const navMenu = document.getElementById('nav-menu');
-navToggle.onclick = function() {
-  navMenu.classList.toggle('open');
-  if (navMenu.classList.contains('open')) {
-    navMenu.querySelectorAll('button').forEach(btn=>{
-      btn.onclick = () => navMenu.classList.remove('open');
+        
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.timer-overlay, .search-overlay, .converter-overlay, .cost-overlay, .modal').forEach(overlay => {
+                overlay.classList.add('hidden');
+            });
+        }
     });
-  }
-};
+});
