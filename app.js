@@ -1,4 +1,17 @@
-    // In-memory checkbox states (no localStorage per strict instructions)
+// Paradise Bakes & Cafe Training App - Fixed Navigation & Functionality with 36+ Recipes
+class ParadiseCafeApp {
+constructor() {
+this.currentSection = 'home';
+this.currentRecipeCategory = 'pizza';
+this.currentMaintenancePeriod = 'daily';
+this.currentSafetyTab = 'personal';
+this.activeTimers = new Map();
+this.timerIdCounter = 0;
+this.isInitialized = false;
+this.currentTheme = 'light';
+this.emergencyBannerVisible = false;
+
+// In-memory checkbox states (no localStorage per strict instructions)
     this.checkboxStates = new Map();
     
     // Complete application data with 36+ recipes and all 9 equipment items
