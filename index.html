@@ -1,369 +1,1805 @@
 <!DOCTYPE html>
-<html lang="en" data-color-scheme="light" class="no-js">
+<html lang="en" data-color-scheme="light">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Paradise Bakes & Cafe Training Manual</title>
-<link rel="stylesheet" href="style.css" />
-<!-- Add any favicon, meta tags, etc. as needed -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradise Bakes & Cafe Training Manual</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<!-- Emergency Sticky Banner -->
-<div id="emergency-sticky-banner" class="emergency-sticky-banner hidden" role="alert" aria-live="assertive">
-  <div class="emergency-banner-content">
-    <span class="emergency-icon" aria-hidden="true">🚨</span>
-    <span class="emergency-text">EMERGENCY ALERT: Kitchen emergency procedures activated</span>
-    <button class="emergency-close" aria-label="Close emergency banner">×</button>
-  </div>
-</div>
-
-<header class="header" role="banner">
-  <div class="container">
-    <div class="header-content">
-      <button id="hamburger-toggle" class="hamburger" aria-label="Toggle menu navigation">☰</button>
-      <h1>Paradise Bakes & Cafe Training Manual</h1>
-      <p class="tagline">
-        नमस्ते और आपका स्वागत है! Your complete guide to professional vegetarian fast food preparation in PCMC, Pune.
-      </p>
-      <p class="subtitle">36+ Recipes | 9 Equipment | 100% Vegetarian | FSSAI Compliant</p>
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light/dark theme">🌙</button>
-      <button id="emergency-toggle" class="emergency-toggle" aria-label="Toggle emergency alert banner">🚨</button>
-    </div>
-  </div>
-</header>
-
-<nav id="main-nav" class="main-nav" role="navigation" aria-label="Main Navigation">
-  <div class="container">
-    <div class="nav-grid">
-      <button class="nav-btn active" data-section="home" aria-current="page" type="button">🏠 Home</button>
-      <button class="nav-btn" data-section="recipes" type="button">📖 Recipes</button>
-      <button class="nav-btn" data-section="equipment" type="button">⚙️ Equipment</button>
-      <button class="nav-btn" data-section="safety" type="button">🛡️ Safety</button>
-      <button class="nav-btn" data-section="bulk-prep" type="button">📊 Bulk Prep</button>
-      <button class="nav-btn" data-section="maintenance" type="button">🔧 Maintenance</button>
-      <button class="nav-btn" data-section="emergency" type="button">🚨 Emergency</button>
-    </div>
-  </div>
-</nav>
-
-<main class="main-content" role="main">
-  <div class="container">
-
-    <!-- Home Section -->
-    <section id="home" class="content-section active" tabindex="-1">
-      <article class="welcome-card">
-        <h2>Welcome to Paradise Bakes & Cafe Training Manual</h2>
-        <p>नमस्ते और आपका स्वागत है! Your complete guide to professional vegetarian fast food preparation in PCMC, Pune.</p>
-        <div class="quick-stats">
-          <div class="stat-item">
-            <span class="stat-number">36+</span>
-            <span class="stat-label">Recipes</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">9</span>
-            <span class="stat-label">Equipment</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">100%</span>
-            <span class="stat-label">Vegetarian</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">FSSAI</span>
-            <span class="stat-label">Compliant</span>
-          </div>
+    <!-- Emergency sticky banner (hidden by default) -->
+    <div id="emergency-sticky-banner" class="emergency-sticky-banner hidden">
+        <div class="emergency-banner-content">
+            <span class="emergency-icon" aria-hidden="true">🚨</span>
+            <span class="emergency-text">EMERGENCY ALERT — Follow procedures immediately</span>
+            <button class="emergency-close" aria-label="Close banner">✕</button>
         </div>
-
-        <section class="daily-checklist">
-          <h3>Daily Opening Checklist</h3>
-          <form class="checklist-items" aria-label="Daily opening checklist">
-            <label>
-              <input type="checkbox" data-task="equipment-check" />
-              Check all equipment functionality
-            </label>
-            <label>
-              <input type="checkbox" data-task="temperature-log" />
-              Record fridge/freezer temperatures
-            </label>
-            <label>
-              <input type="checkbox" data-task="oil-filter" />
-              Filter fryer oil and check quality
-            </label>
-            <label>
-              <input type="checkbox" data-task="coffee-clean" />
-              Clean coffee machine
-            </label>
-            <label>
-              <input type="checkbox" data-task="sanitize-surfaces" />
-              Sanitize all food contact surfaces
-            </label>
-            <label>
-              <input type="checkbox" data-task="stock-check" />
-              Check ingredient stock levels
-            </label>
-          </form>
-        </section>
-
-        <section class="quick-access">
-          <h3>Quick Access</h3>
-          <div class="quick-access-grid">
-            <button class="quick-btn" data-target="recipes" type="button">View Recipes</button>
-            <button class="quick-btn" data-target="equipment" type="button">Equipment Guide</button>
-            <button class="quick-btn" data-target="safety" type="button">Safety Protocols</button>
-            <button class="quick-btn" data-target="emergency" type="button">Emergency Info</button>
-          </div>
-        </section>
-      </article>
-    </section>
-
-    <!-- Recipes Section -->
-    <section id="recipes" class="content-section" tabindex="-1">
-      <div class="recipe-search">
-        <input
-          type="search"
-          id="recipe-search-input"
-          class="form-control"
-          placeholder="Search recipes..."
-          aria-label="Search recipes"
-        />
-        <select
-          id="recipe-type-filter"
-          class="form-control"
-          aria-label="Filter recipes by type"
-        >
-          <option value="">All Types</option>
-          <option value="Classic">Classic</option>
-          <option value="Spicy">Spicy</option>
-          <option value="Premium">Premium</option>
-          <option value="Gourmet">Gourmet</option>
-          <option value="Veggie Loaded">Veggie Loaded</option>
-          <option value="Fusion">Fusion</option>
-          <option value="Cheesy">Cheesy</option>
-          <option value="Multi-layer">Multi-layer</option>
-          <option value="Street Style">Street Style</option>
-          <option value="Indian Fusion">Indian Fusion</option>
-          <option value="Healthy">Healthy</option>
-          <option value="Mediterranean">Mediterranean</option>
-          <option value="Continental">Continental</option>
-          <option value="Mexican">Mexican</option>
-        </select>
-      </div>
-
-      <div class="recipe-categories" role="tablist" aria-label="Recipe categories">
-        <button
-          class="category-btn active"
-          data-category="pizza"
-          role="tab"
-          aria-selected="true"
-          aria-controls="pizza-recipes"
-          id="tab-pizza"
-          type="button"
-        >
-          🍕 Pizza Recipes
-        </button>
-        <button
-          class="category-btn"
-          data-category="burger"
-          role="tab"
-          aria-selected="false"
-          aria-controls="burger-recipes"
-          id="tab-burger"
-          type="button"
-        >
-          🍔 Burger Recipes
-        </button>
-        <button
-          class="category-btn"
-          data-category="sandwich"
-          role="tab"
-          aria-selected="false"
-          aria-controls="sandwich-recipes"
-          id="tab-sandwich"
-          type="button"
-        >
-          🥪 Sandwich Recipes
-        </button>
-      </div>
-
-      <div id="pizza-recipes" class="recipe-section active" role="tabpanel" aria-labelledby="tab-pizza">
-        <h3>Pizza Recipes (12+ Varieties)</h3>
-        <div id="pizza-recipes-grid" class="recipes-grid"></div>
-      </div>
-
-      <div id="burger-recipes" class="recipe-section" role="tabpanel" aria-labelledby="tab-burger" hidden>
-        <h3>Burger Recipes (12+ Varieties)</h3>
-        <div id="burger-recipes-grid" class="recipes-grid"></div>
-      </div>
-
-      <div id="sandwich-recipes" class="recipe-section" role="tabpanel" aria-labelledby="tab-sandwich" hidden>
-        <h3>Sandwich Recipes (12+ Varieties)</h3>
-        <div id="sandwich-recipes-grid" class="recipes-grid"></div>
-      </div>
-    </section>
-
-    <!-- Equipment Section -->
-    <section id="equipment" class="content-section" tabindex="-1">
-      <h2>Equipment Guide - All 9 Machines</h2>
-      <div id="equipment-accordion" class="equipment-accordion"></div>
-    </section>
-
-    <!-- Safety Section -->
-    <section id="safety" class="content-section" tabindex="-1">
-      <h2>Food Safety & Hygiene - FSSAI Compliance</h2>
-      <div class="safety-tabs" role="tablist" aria-label="Safety topics">
-        <button
-          class="safety-tab active"
-          data-tab="personal"
-          role="tab"
-          aria-selected="true"
-          aria-controls="personal-safety"
-          id="tab-personal"
-          type="button"
-        >
-          Personal Hygiene
-        </button>
-        <button
-          class="safety-tab"
-          data-tab="kitchen"
-          role="tab"
-          aria-selected="false"
-          aria-controls="kitchen-safety"
-          id="tab-kitchen"
-          type="button"
-        >
-          Kitchen Safety
-        </button>
-        <button
-          class="safety-tab"
-          data-tab="food"
-          role="tab"
-          aria-selected="false"
-          aria-controls="food-safety"
-          id="tab-food"
-          type="button"
-        >
-          Food Safety
-        </button>
-        <button
-          class="safety-tab"
-          data-tab="haccp"
-          role="tab"
-          aria-selected="false"
-          aria-controls="haccp-safety"
-          id="tab-haccp"
-          type="button"
-        >
-          HACCP
-        </button>
-      </div>
-
-      <!-- Safety content placeholders filled by app.js -->
-      <div id="personal-safety" class="safety-content active" role="tabpanel" aria-labelledby="tab-personal"></div>
-      <div id="kitchen-safety" class="safety-content" role="tabpanel" aria-labelledby="tab-kitchen" hidden></div>
-      <div id="food-safety" class="safety-content" role="tabpanel" aria-labelledby="tab-food" hidden></div>
-      <div id="haccp-safety" class="safety-content" role="tabpanel" aria-labelledby="tab-haccp" hidden></div>
-    </section>
-
-    <!-- Bulk Prep Section -->
-    <section id="bulk-prep" class="content-section" tabindex="-1">
-      <h2>Bulk Preparation Guide</h2>
-      <!-- Bulk prep content filled by JS -->
-    </section>
-
-    <!-- Maintenance Section -->
-    <section id="maintenance" class="content-section" tabindex="-1">
-      <h2>Maintenance Schedule</h2>
-      <!-- Maintenance content filled by JS -->
-    </section>
-
-    <!-- Emergency Section -->
-    <section id="emergency" class="content-section" tabindex="-1">
-      <h2>Emergency Procedures</h2>
-      <!-- Emergency content filled by JS -->
-    </section>
-
-  </div>
-</main>
-
-<!-- Utility Panel -->
-<div class="utility-panel" aria-label="Utility actions">
-  <button id="timer-btn" class="utility-btn timer-btn" title="Kitchen Timer" aria-haspopup="dialog" aria-controls="timer-overlay" type="button">⏱</button>
-  <button id="search-btn" class="utility-btn search-btn" title="Search" aria-haspopup="dialog" aria-controls="search-overlay" type="button">🔍</button>
-  <button id="converter-btn" class="utility-btn converter-btn" title="Unit Converter" aria-haspopup="dialog" aria-controls="converter-overlay" type="button">🔄</button>
-  <button id="cost-btn" class="utility-btn cost-btn" title="Cost Calculator" aria-haspopup="dialog" aria-controls="cost-overlay" type="button">💰</button>
-</div>
-
-<!-- Overlay Modals -->
-
-<!-- Timer Overlay -->
-<div id="timer-overlay" class="timer-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="timer-title">
-  <div class="timer-widget">
-    <div class="widget-header">
-      <h2 id="timer-title">Kitchen Timer</h2>
-      <button class="close-widget" aria-label="Close timer" data-overlay="timer-overlay" type="button">×</button>
     </div>
-    <div class="timer-form">
-      <input id="timer-name" class="form-control" placeholder="Timer name" aria-label="Timer name" />
-      <input id="timer-minutes" class="form-control" type="number" min="0" max="99" placeholder="Minutes" aria-label="Minutes" />
-      <input id="timer-seconds" class="form-control" type="number" min="0" max="59" placeholder="Seconds" aria-label="Seconds" />
-      <button id="start-timer" class="btn btn--primary" type="button">Start</button>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Hamburger toggle -->
+                <button id="hamburger-toggle" class="hamburger" aria-label="Toggle navigation">☰</button>
+                
+                <h1>Paradise Bakes & Cafe Training Manual</h1>
+                <p class="tagline">नमस्ते और आपका स्वागत है! Your complete guide to professional vegetarian fast food preparation in PCMC, Pune.</p>
+                <p class="subtitle">36+ Recipes | 9 Equipment | 100% Vegetarian | FSSAI Compliant</p>
+                
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light/dark mode">🌙</button>
+                <button id="emergency-toggle" class="emergency-toggle" aria-label="Toggle emergency banner">🚨</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main navigation -->
+    <nav id="main-nav" class="main-nav">
+        <div class="container">
+            <div class="nav-grid">
+                <button class="nav-btn" data-section="home">🏠 Home</button>
+                <button class="nav-btn" data-section="recipes">📖 Recipes</button>
+                <button class="nav-btn" data-section="equipment">⚙️ Equipment</button>
+                <button class="nav-btn" data-section="safety">🛡️ Safety</button>
+                <button class="nav-btn" data-section="bulk-prep">📊 Bulk Prep</button>
+                <button class="nav-btn" data-section="maintenance">🔧 Maintenance</button>
+                <button class="nav-btn" data-section="emergency">🚨 Emergency</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Home Section -->
+            <section id="home" class="content-section active">
+                <div class="welcome-card">
+                    <h2>Welcome to Paradise Bakes & Cafe Training Manual</h2>
+                    <p>नमस्ते और आपका स्वागत है! Your complete guide to professional vegetarian fast food preparation in PCMC, Pune.</p>
+                    
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">36+</span>
+                            <span class="stat-label">Recipes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">9</span>
+                            <span class="stat-label">Equipment</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Vegetarian</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">FSSAI</span>
+                            <span class="stat-label">Compliant</span>
+                        </div>
+                    </div>
+
+                    <div class="daily-checklist">
+                        <h3>Daily Opening Checklist</h3>
+                        <div class="checklist-items">
+                            <label>
+                                <input type="checkbox" data-task="equipment-check">
+                                Check all equipment functionality
+                            </label>
+                            <label>
+                                <input type="checkbox" data-task="temperature-log">
+                                Record fridge/freezer temperatures
+                            </label>
+                            <label>
+                                <input type="checkbox" data-task="oil-filter">
+                                Filter fryer oil and check quality
+                            </label>
+                            <label>
+                                <input type="checkbox" data-task="coffee-clean">
+                                Clean coffee machine
+                            </label>
+                            <label>
+                                <input type="checkbox" data-task="sanitize-surfaces">
+                                Sanitize all food contact surfaces
+                            </label>
+                            <label>
+                                <input type="checkbox" data-task="stock-check">
+                                Check ingredient stock levels
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quick-access">
+                        <h3>Quick Access</h3>
+                        <div class="quick-access-grid">
+                            <button class="quick-btn" data-target="recipes">View Recipes</button>
+                            <button class="quick-btn" data-target="equipment">Equipment Guide</button>
+                            <button class="quick-btn" data-target="safety">Safety Protocols</button>
+                            <button class="quick-btn" data-target="emergency">Emergency Info</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recipes Section -->
+            <section id="recipes" class="content-section">
+                <h2>Recipe Collection - 36+ Varieties</h2>
+                
+                <div class="recipe-search">
+                    <input type="text" id="recipe-search-input" placeholder="Search recipes..." class="form-control">
+                    <div class="recipe-filters">
+                        <select id="recipe-type-filter" class="form-control">
+                            <option value="">All Types</option>
+                            <option value="Classic">Classic</option>
+                            <option value="Spicy">Spicy</option>
+                            <option value="Premium">Premium</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="recipe-categories">
+                    <button class="category-btn active" data-category="pizza">🍕 Pizza Recipes</button>
+                    <button class="category-btn" data-category="burger">🍔 Burger Recipes</button>
+                    <button class="category-btn" data-category="sandwich">🥪 Sandwich Recipes</button>
+                </div>
+
+                <div id="pizza-recipes" class="recipe-section active">
+                    <h3>Pizza Recipes (12+ Varieties)</h3>
+                    <div id="pizza-recipes-grid" class="recipes-grid">
+                        <!-- Pizza recipes will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="burger-recipes" class="recipe-section">
+                    <h3>Burger Recipes (12+ Varieties)</h3>
+                    <div id="burger-recipes-grid" class="recipes-grid">
+                        <!-- Burger recipes will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="sandwich-recipes" class="recipe-section">
+                    <h3>Sandwich Recipes (12+ Varieties)</h3>
+                    <div id="sandwich-recipes-grid" class="recipes-grid">
+                        <!-- Sandwich recipes will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Equipment Section -->
+            <section id="equipment" class="content-section">
+                <h2>Equipment Guide - सभी 9 Machines</h2>
+                <div id="equipment-accordion" class="equipment-accordion">
+                    <!-- Equipment items will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Safety Section -->
+            <section id="safety" class="content-section">
+                <h2>Food Safety & Hygiene - FSSAI Compliance</h2>
+                
+                <div class="safety-tabs">
+                    <button class="safety-tab active" data-tab="personal">Personal Hygiene</button>
+                    <button class="safety-tab" data-tab="kitchen">Kitchen Safety</button>
+                    <button class="safety-tab" data-tab="food">Food Safety</button>
+                    <button class="safety-tab" data-tab="haccp">HACCP</button>
+                </div>
+
+                <div id="personal-safety" class="safety-content active">
+                    <div class="safety-grid">
+                        <div class="safety-card">
+                            <h3>Hand Washing Protocol</h3>
+                            <div class="safety-checklist">
+                                <label>
+                                    <input type="checkbox" data-safety="hand-wash-1">
+                                    40-60 second hand washing with soap
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hand-wash-2">
+                                    Wash before handling food
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hand-wash-3">
+                                    Wash after using restroom
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hand-wash-4">
+                                    Wash after touching face/hair
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="safety-card">
+                            <h3>Personal Hygiene Standards</h3>
+                            <div class="safety-checklist">
+                                <label>
+                                    <input type="checkbox" data-safety="hygiene-1">
+                                    Clean uniform & apron daily
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hygiene-2">
+                                    Hair net mandatory at all times
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hygiene-3">
+                                    No jewelry except plain wedding ring
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hygiene-4">
+                                    Trim nails weekly
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hygiene-5">
+                                    No strong perfumes/colognes
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="kitchen-safety" class="safety-content">
+                    <div class="safety-grid">
+                        <div class="safety-card">
+                            <h3>Surface Cleaning</h3>
+                            <div class="cleaning-schedule">
+                                <div class="cleaning-item">
+                                    <div class="cleaning-frequency">Every 2 Hours</div>
+                                    <div>Sanitize all food contact surfaces</div>
+                                </div>
+                                <div class="cleaning-item">
+                                    <div class="cleaning-frequency">After Each Use</div>
+                                    <div>Clean cutting boards, utensils</div>
+                                </div>
+                                <div class="cleaning-item">
+                                    <div class="cleaning-frequency">Daily</div>
+                                    <div>Deep clean floors, walls</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="safety-card">
+                            <h3>Color-Coded System</h3>
+                            <div class="color-code-grid">
+                                <div class="color-item">
+                                    <div class="color-dot red-dot"></div>
+                                    <span>Raw Vegetables</span>
+                                </div>
+                                <div class="color-item">
+                                    <div class="color-dot blue-dot"></div>
+                                    <span>Cooked Food</span>
+                                </div>
+                                <div class="color-item">
+                                    <div class="color-dot green-dot"></div>
+                                    <span>Salads/Fresh</span>
+                                </div>
+                                <div class="color-item">
+                                    <div class="color-dot yellow-dot"></div>
+                                    <span>Dairy Products</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="food-safety" class="safety-content">
+                    <div class="safety-grid">
+                        <div class="safety-card">
+                            <h3>Temperature Control</h3>
+                            <div class="temp-chart">
+                                <div class="temp-item safe">
+                                    <div class="temp-range">Above 63°C</div>
+                                    <div class="temp-desc">Hot food serving temperature</div>
+                                </div>
+                                <div class="temp-item danger">
+                                    <div class="temp-range">5°C - 63°C</div>
+                                    <div class="temp-desc">DANGER ZONE - Bacteria growth</div>
+                                </div>
+                                <div class="temp-item safe">
+                                    <div class="temp-range">Below 5°C</div>
+                                    <div class="temp-desc">Cold food storage safe</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="safety-card">
+                            <h3>Storage Guidelines</h3>
+                            <div class="safety-checklist">
+                                <label>
+                                    <input type="checkbox" data-safety="storage-1">
+                                    Label all containers with date/time
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="storage-2">
+                                    FIFO - First In First Out rotation
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="storage-3">
+                                    Check expiry dates every shift
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="storage-4">
+                                    Store raw and cooked separately
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="haccp-safety" class="safety-content">
+                    <div class="safety-grid">
+                        <div class="safety-card">
+                            <h3>Critical Control Points</h3>
+                            <div class="haccp-points">
+                                <div class="haccp-point">
+                                    <h4>CCP 1: Receiving</h4>
+                                    <p>Check temperature, quality of incoming ingredients</p>
+                                </div>
+                                <div class="haccp-point">
+                                    <h4>CCP 2: Storage</h4>
+                                    <p>Maintain proper temperatures in fridges/freezers</p>
+                                </div>
+                                <div class="haccp-point">
+                                    <h4>CCP 3: Cooking</h4>
+                                    <p>Ensure minimum cooking temperatures reached</p>
+                                </div>
+                                <div class="haccp-point">
+                                    <h4>CCP 4: Serving</h4>
+                                    <p>Hold hot food >63°C, cold food <5°C</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="safety-card">
+                            <h3>Record Keeping</h3>
+                            <div class="safety-checklist">
+                                <label>
+                                    <input type="checkbox" data-safety="record-1">
+                                    Document all temperature logs
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="record-2">
+                                    Monitor critical control points
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="record-3">
+                                    Corrective action protocols
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bulk Prep Section -->
+            <section id="bulk-prep" class="content-section">
+                <h2>Bulk Preparation Guide</h2>
+                
+                <div class="bulk-content">
+                    <div class="scaling-calculator">
+                        <h3>Recipe Scaling Calculator</h3>
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label for="recipe-select">Select Recipe:</label>
+                                <select id="recipe-select" class="form-control">
+                                    <option value="">Choose a recipe...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="target-quantity">Target Quantity:</label>
+                                <input type="number" id="target-quantity" class="form-control" min="1" value="25">
+                            </div>
+                            <div class="multiplier-display">
+                                Multiplier: <span id="multiplier">25x</span>
+                            </div>
+                            <div id="scaled-ingredients" class="scaled-recipe">
+                                <h4>Scaled Ingredients</h4>
+                                <div class="scaled-ingredients">
+                                    <p>Select a recipe to see scaled ingredients</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bulk-prep-sections">
+                        <div class="bulk-prep-card">
+                            <h3>Make-Ahead Schedule</h3>
+                            <div class="make-ahead-table">
+                                <div class="table-item">
+                                    <div class="table-header">Pizza Sauce</div>
+                                    <div>3 days fridge | 30 days freezer</div>
+                                </div>
+                                <div class="table-item">
+                                    <div class="table-header">Burger Patties</div>
+                                    <div>1 day fridge | 90 days freezer</div>
+                                </div>
+                                <div class="table-item">
+                                    <div class="table-header">Sandwich Fillings</div>
+                                    <div>2 days fridge | Not suitable for freezing</div>
+                                </div>
+                                <div class="table-item">
+                                    <div class="table-header">Grated Cheese</div>
+                                    <div>5 days fridge | 60 days freezer</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bulk-prep-card">
+                            <h3>Prep Time Guidelines</h3>
+                            <div class="prep-times">
+                                <div class="prep-item">
+                                    <span class="prep-task">Pizza dough preparation</span>
+                                    <span class="prep-time">2 hours before service</span>
+                                </div>
+                                <div class="prep-item">
+                                    <span class="prep-task">Vegetable chopping</span>
+                                    <span class="prep-time">4 hours shelf life</span>
+                                </div>
+                                <div class="prep-item">
+                                    <span class="prep-task">Sauce preparation</span>
+                                    <span class="prep-time">Day before service</span>
+                                </div>
+                                <div class="prep-item">
+                                    <span class="prep-task">Paneer marination</span>
+                                    <span class="prep-time">2-4 hours minimum</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bulk-prep-card">
+                            <h3>Storage Labels Template</h3>
+                            <div class="storage-labels">
+                                <span class="storage-label">Item Name</span>
+                                <span class="storage-label">Prep Date</span>
+                                <span class="storage-label">Use By Date</span>
+                                <span class="storage-label">Storage Temp</span>
+                                <span class="storage-label">Staff Initials</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Maintenance Section -->
+            <section id="maintenance" class="content-section">
+                <h2>Maintenance Schedule</h2>
+                
+                <div class="maintenance-tabs">
+                    <button class="maintenance-btn active" data-period="daily">Daily</button>
+                    <button class="maintenance-btn" data-period="weekly">Weekly</button>
+                    <button class="maintenance-btn" data-period="monthly">Monthly</button>
+                </div>
+
+                <div id="daily-maintenance" class="maintenance-content active">
+                    <h3>Daily Maintenance Tasks</h3>
+                    <div class="maintenance-grid">
+                        <div class="maintenance-card">
+                            <h4>General Cleaning</h4>
+                            <div class="maintenance-checklist">
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-1">
+                                    Wipe all stainless steel surfaces
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-2">
+                                    Check fridge/freezer temps and log
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-3">
+                                    Filter fryer oil and check quality
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-4">
+                                    Clean coffee machine
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-5">
+                                    Sanitize food contact surfaces
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-6">
+                                    Empty trash and replace liners
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="weekly-maintenance" class="maintenance-content">
+                    <h3>Weekly Maintenance Tasks</h3>
+                    <div class="maintenance-grid">
+                        <div class="maintenance-card">
+                            <h4>Deep Cleaning</h4>
+                            <div class="maintenance-checklist">
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-1">
+                                    Deep clean pizza oven interior
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-2">
+                                    Lubricate sandwich maker hinges
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-3">
+                                    Descale coffee machine
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-4">
+                                    Clean exhaust filters
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-5">
+                                    Deep mop floors with disinfectant
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-6">
+                                    Check first aid kit supplies
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="monthly-maintenance" class="maintenance-content">
+                    <h3>Monthly Maintenance Tasks</h3>
+                    <div class="maintenance-grid">
+                        <div class="maintenance-card">
+                            <h4>Professional Service</h4>
+                            <div class="maintenance-checklist">
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-1">
+                                    Calibrate all thermometers
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-2">
+                                    Service dough mixer motor
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-3">
+                                    Professional pest control inspection
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-4">
+                                    Deep clean refrigeration coils
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-5">
+                                    Test emergency equipment
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-6">
+                                    Update training records
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Emergency Section -->
+            <section id="emergency" class="content-section">
+                <h2>Emergency Procedures</h2>
+                
+                <div class="emergency-banner">
+                    <div class="emergency-contacts">
+                        <div class="emergency-contact">
+                            <div class="contact-icon">🚒</div>
+                            <div class="contact-info">
+                                <div class="contact-label">Fire Department</div>
+                                <div class="contact-number">101</div>
+                            </div>
+                        </div>
+                        <div class="emergency-contact">
+                            <div class="contact-icon">🚑</div>
+                            <div class="contact-info">
+                                <div class="contact-label">Ambulance</div>
+                                <div class="contact-number">108</div>
+                            </div>
+                        </div>
+                        <div class="emergency-contact">
+                            <div class="contact-icon">👮</div>
+                            <div class="contact-info">
+                                <div class="contact-label">Police</div>
+                                <div class="contact-number">100</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="emergency-procedures">
+                    <div class="procedure-card fire-procedure">
+                        <h3>🔥 Fire Emergency</h3>
+                        <div class="procedure-steps">
+                            <div class="procedure-step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Turn off main gas/electric supply immediately</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Use Class K fire extinguisher for kitchen fires</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Evacuate via nearest exit (back door preferred)</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">Call 101 fire department</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">5</div>
+                                <div class="step-text">Do not use water on oil fires</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">6</div>
+                                <div class="step-text">Account for all staff at meeting point</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="procedure-card electrical-procedure">
+                        <h3>⚡ Electrical Emergency</h3>
+                        <div class="procedure-steps">
+                            <div class="procedure-step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Switch off main circuit breaker</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Do not touch live wires or equipment</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Call qualified electrician immediately</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">Isolate affected area</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">5</div>
+                                <div class="step-text">Use wooden/plastic tools only</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">6</div>
+                                <div class="step-text">Report to management</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="procedure-card injury-procedure">
+                        <h3>🩹 Medical Emergency</h3>
+                        <div class="procedure-steps">
+                            <div class="procedure-step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Apply first aid if trained</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Call 108 for ambulance</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Do not move injured person unless necessary</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">Record incident details</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">5</div>
+                                <div class="step-text">Keep first aid kit stocked</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">6</div>
+                                <div class="step-text">Know location of nearest hospital</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="procedure-card equipment-procedure">
+                        <h3>⚙️ Equipment Failure</h3>
+                        <div class="procedure-steps">
+                            <div class="procedure-step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Immediately unplug faulty unit</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Tag equipment 'OUT OF SERVICE'</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Remove from food prep area</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">Call authorized service technician</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">5</div>
+                                <div class="step-text">Document fault details</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">6</div>
+                                <div class="step-text">Use backup equipment if available</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Utility Panel -->
+    <div class="utility-panel">
+        <button id="timer-btn" class="utility-btn timer-btn" title="Kitchen Timer">⏱️</button>
+        <button id="search-btn" class="utility-btn search-btn" title="Search Recipes">🔍</button>
+        <button id="converter-btn" class="utility-btn converter-btn" title="Unit Converter">🔄</button>
+        <button id="cost-btn" class="utility-btn cost-btn" title="Cost Calculator">💰</button>
     </div>
-    <div id="active-timers" class="active-timers-widget" aria-live="polite"></div>
-  </div>
-</div>
 
-<!-- Search Overlay -->
-<div id="search-overlay" class="search-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="search-title">
-  <div class="search-widget">
-    <div class="widget-header">
-      <h2 id="search-title">Search</h2>
-      <button class="close-widget" aria-label="Close search" data-overlay="search-overlay" type="button">×</button>
+    <!-- Timer Overlay -->
+    <div id="timer-overlay" class="timer-overlay hidden">
+        <div class="timer-widget">
+            <div class="widget-header">
+                <h4>Kitchen Timer</h4>
+                <button class="close-widget" data-overlay="timer-overlay">✕</button>
+            </div>
+            <div class="timer-form">
+                <div class="form-row">
+                    <input type="text" id="timer-name" placeholder="Timer name..." class="form-control">
+                    <input type="number" id="timer-minutes" placeholder="Min" min="0" max="59" class="form-control">
+                    <input type="number" id="timer-seconds" placeholder="Sec" min="0" max="59" class="form-control">
+                    <button id="start-timer" class="btn btn--primary">Start</button>
+                </div>
+            </div>
+            <div id="active-timers" class="active-timers-widget">
+                <!-- Active timers will be populated by JavaScript -->
+            </div>
+        </div>
     </div>
-    <input id="global-search" class="form-control" type="search" placeholder="Type to search..." aria-label="Search recipes and equipment" />
-    <select id="search-category" class="form-control" aria-label="Search category">
-      <option value="">All</option>
-      <option value="recipes">Recipes</option>
-      <option value="equipment">Equipment</option>
-      <option value="safety">Safety</option>
-    </select>
-    <div id="search-results" class="search-results" aria-live="polite"></div>
-  </div>
-</div>
 
-<!-- Converter Overlay -->
-<div id="converter-overlay" class="converter-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="converter-title">
-  <div class="converter-widget">
-    <div class="widget-header">
-      <h2 id="converter-title">Unit Converter</h2>
-      <button class="close-widget" aria-label="Close converter" data-overlay="converter-overlay" type="button">×</button>
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="search-overlay hidden">
+        <div class="search-widget">
+            <div class="widget-header">
+                <h4>Search Recipes & Equipment</h4>
+                <button class="close-widget" data-overlay="search-overlay">✕</button>
+            </div>
+            <div class="search-form">
+                <input type="text" id="global-search" placeholder="Search..." class="form-control">
+                <div class="search-filters">
+                    <select id="search-category" class="form-control">
+                        <option value="">All Categories</option>
+                        <option value="recipes">Recipes</option>
+                        <option value="equipment">Equipment</option>
+                        <option value="safety">Safety</option>
+                    </select>
+                </div>
+            </div>
+            <div id="search-results" class="search-results">
+                <p class="no-results">Start typing to search...</p>
+            </div>
+        </div>
     </div>
-    <!-- Converter tabs and content generated via JS -->
-  </div>
-</div>
 
-<!-- Cost Calculator Overlay -->
-<div id="cost-overlay" class="cost-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="cost-title">
-  <div class="cost-widget">
-    <div class="widget-header">
-      <h2 id="cost-title">Cost Calculator</h2>
-      <button class="close-widget" aria-label="Close cost calculator" data-overlay="cost-overlay" type="button">×</button>
+    <!-- Converter Overlay -->
+    <div id="converter-overlay" class="converter-overlay hidden">
+        <div class="converter-widget">
+            <div class="widget-header">
+                <h4>Unit Converter</h4>
+                <button class="close-widget" data-overlay="converter-overlay">✕</button>
+            </div>
+            <div class="converter-tabs">
+                <button class="converter-tab active" data-converter="weight">Weight</button>
+                <button class="converter-tab" data-converter="volume">Volume</button>
+                <button class="converter-tab" data-converter="temperature">Temperature</button>
+            </div>
+            <div id="weight-converter" class="converter-content active">
+                <div class="converter-row">
+                    <input type="number" id="weight-input" class="form-control" placeholder="Enter weight">
+                    <select id="weight-from" class="form-control">
+                        <option value="g">Grams (g)</option>
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="oz">Ounces (oz)</option>
+                        <option value="lb">Pounds (lb)</option>
+                    </select>
+                </div>
+                <div class="converter-arrow">⬇️</div>
+                <div class="converter-row">
+                    <div id="weight-result" class="converter-result">Result will appear here</div>
+                    <select id="weight-to" class="form-control">
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="g">Grams (g)</option>
+                        <option value="oz">Ounces (oz)</option>
+                        <option value="lb">Pounds (lb)</option>
+                    </select>
+                </div>
+            </div>
+            <div id="volume-converter" class="converter-content">
+                <div class="converter-row">
+                    <input type="number" id="volume-input" class="form-control" placeholder="Enter volume">
+                    <select id="volume-from" class="form-control">
+                        <option value="ml">Milliliters (ml)</option>
+                        <option value="l">Liters (l)</option>
+                        <option value="cup">Cups</option>
+                        <option value="tbsp">Tablespoons</option>
+                        <option value="tsp">Teaspoons</option>
+                    </select>
+                </div>
+                <div class="converter-arrow">⬇️</div>
+                <div class="converter-row">
+                    <div id="volume-result" class="converter-result">Result will appear here</div>
+                    <select id="volume-to" class="form-control">
+                        <option value="l">Liters (l)</option>
+                        <option value="ml">Milliliters (ml)</option>
+                        <option value="cup">Cups</option>
+                        <option value="tbsp">Tablespoons</option>
+                        <option value="tsp">Teaspoons</option>
+                    </select>
+                </div>
+            </div>
+            <div id="temperature-converter" class="converter-content">
+                <div class="converter-row">
+                    <input type="number" id="temp-input" class="form-control" placeholder="Enter temperature">
+                    <select id="temp-from" class="form-control">
+                        <option value="c">Celsius (°C)</option>
+                        <option value="f">Fahrenheit (°F)</option>
+                        <option value="k">Kelvin (K)</option>
+                    </select>
+                </div>
+                <div class="converter-arrow">⬇️</div>
+                <div class="converter-row">
+                    <div id="temp-result" class="converter-result">Result will appear here</div>
+                    <select id="temp-to" class="form-control">
+                        <option value="f">Fahrenheit (°F)</option>
+                        <option value="c">Celsius (°C)</option>
+                        <option value="k">Kelvin (K)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- Cost calculator content generated via JS -->
-  </div>
-</div>
 
-<!-- Recipe Modal -->
-<div id="recipe-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="recipe-modal-title">
-  <div class="modal-content">
-    <h2 id="recipe-modal-title" tabindex="0"></h2>
-    <button class="close-widget" aria-label="Close recipe details" data-overlay="recipe-modal" type="button">×</button>
-    <div id="recipe-modal-content"></div>
-  </div>
-</div>
+    <!-- Cost Calculator Overlay -->
+    <div id="cost-overlay" class="cost-overlay hidden">
+        <div class="cost-widget">
+            <div class="widget-header">
+                <h4>Cost Calculator</h4>
+                <button class="close-widget" data-overlay="cost-overlay">✕</button>
+            </div>
+            <div class="cost-form">
+                <div class="form-group">
+                    <label for="cost-recipe">Select Recipe:</label>
+                    <select id="cost-recipe" class="form-control">
+                        <option value="">Choose a recipe...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cost-quantity">Quantity:</label>
+                    <input type="number" id="cost-quantity" class="form-control" min="1" value="1">
+                </div>
+                <div id="cost-breakdown" class="cost-breakdown">
+                    <p class="no-selection">Select a recipe to see cost breakdown</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- Scroll to Top Button -->
-<button id="scroll-to-top" class="scroll-to-top hidden" aria-label="Scroll to top" type="button">⬆️</button>
+    <!-- Recipe Modal -->
+    <div id="recipe-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" data-modal="recipe-modal">✕</span>
+            <div id="recipe-modal-content">
+                <!-- Recipe details will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
 
-<script src="app.js"></script>
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" class="scroll-to-top hidden" aria-label="Scroll to top">⬆️</button>
+
+    <script src="app.js"></script>
+</body>
+</html>
+shakil@shakils-MacBook-Pro paradise_bakes_cafe % 
+shakil@shakils-MacBook-Pro paradise_bakes_cafe % 
+shakil@shakils-MacBook-Pro paradise_bakes_cafe % clear
+
+shakil@shakils-MacBook-Pro paradise_bakes_cafe % cat index.html
+<!DOCTYPE html>
+<html lang="en" data-color-scheme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paradise Bakes & Cafe Training Manual</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Emergency sticky banner (hidden by default) -->
+    <div id="emergency-sticky-banner" class="emergency-sticky-banner hidden">
+        <div class="emergency-banner-content">
+            <span class="emergency-icon" aria-hidden="true">🚨</span>
+            <span class="emergency-text">EMERGENCY ALERT — Follow procedures immediately</span>
+            <button class="emergency-close" aria-label="Close banner">✕</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <!-- Hamburger toggle -->
+                <button id="hamburger-toggle" class="hamburger" aria-label="Toggle navigation">☰</button>
+                
+                <h1>Paradise Bakes & Cafe Training Manual</h1>
+                <p class="tagline">नमस्ते और आपका स्वागत है! Your complete guide to professional vegetarian fast food preparation in PCMC, Pune.</p>
+                <p class="subtitle">36+ Recipes | 9 Equipment | 100% Vegetarian | FSSAI Compliant</p>
+                
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light/dark mode">🌙</button>
+                <button id="emergency-toggle" class="emergency-toggle" aria-label="Toggle emergency banner">🚨</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main navigation -->
+    <nav id="main-nav" class="main-nav">
+        <div class="container">
+            <div class="nav-grid">
+                <button class="nav-btn" data-section="home">🏠 Home</button>
+                <button class="nav-btn" data-section="recipes">📖 Recipes</button>
+                <button class="nav-btn" data-section="equipment">⚙️ Equipment</button>
+                <button class="nav-btn" data-section="safety">🛡️ Safety</button>
+                <button class="nav-btn" data-section="bulk-prep">📊 Bulk Prep</button>
+                <button class="nav-btn" data-section="maintenance">🔧 Maintenance</button>
+                <button class="nav-btn" data-section="emergency">🚨 Emergency</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Home Section -->
+            <section id="home" class="content-section active">
+                <div class="welcome-card">
+                    <h2>Welcome to Paradise Bakes & Cafe Training Manual</h2>
+                    <p>नमस्ते और आपका स्वागत है! Your complete guide to professional vegetarian fast food preparation in PCMC, Pune.</p>
+                    
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">36+</span>
+                            <span class="stat-label">Recipes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">9</span>
+                            <span class="stat-label">Equipment</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Vegetarian</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">FSSAI</span>
+                            <span class="stat-label">Compliant</span>
+                        </div>
+                    </div>
+
+                    <div class="daily-checklist">
+                        <h3>Daily Opening Checklist</h3>
+                        <div class="checklist-items">
+                            <label>
+                                <input type="checkbox" data-task="equipment-check">
+                                Check all equipment functionality
+                            </label>
+                            <label>
+                                <input type="checkbox" data-task="temperature-log">
+                                Record fridge/freezer temperatures
+                            </label>
+                            <label>
+                                <input type="checkbox" data-task="oil-filter">
+                                Filter fryer oil and check quality
+                            </label>
+                            <label>
+                                <input type="checkbox" data-task="coffee-clean">
+                                Clean coffee machine
+                            </label>
+                            <label>
+                                <input type="checkbox" data-task="sanitize-surfaces">
+                                Sanitize all food contact surfaces
+                            </label>
+                            <label>
+                                <input type="checkbox" data-task="stock-check">
+                                Check ingredient stock levels
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="quick-access">
+                        <h3>Quick Access</h3>
+                        <div class="quick-access-grid">
+                            <button class="quick-btn" data-target="recipes">View Recipes</button>
+                            <button class="quick-btn" data-target="equipment">Equipment Guide</button>
+                            <button class="quick-btn" data-target="safety">Safety Protocols</button>
+                            <button class="quick-btn" data-target="emergency">Emergency Info</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recipes Section -->
+            <section id="recipes" class="content-section">
+                <h2>Recipe Collection - 36+ Varieties</h2>
+                
+                <div class="recipe-search">
+                    <input type="text" id="recipe-search-input" placeholder="Search recipes..." class="form-control">
+                    <div class="recipe-filters">
+                        <select id="recipe-type-filter" class="form-control">
+                            <option value="">All Types</option>
+                            <option value="Classic">Classic</option>
+                            <option value="Spicy">Spicy</option>
+                            <option value="Premium">Premium</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="recipe-categories">
+                    <button class="category-btn active" data-category="pizza">🍕 Pizza Recipes</button>
+                    <button class="category-btn" data-category="burger">🍔 Burger Recipes</button>
+                    <button class="category-btn" data-category="sandwich">🥪 Sandwich Recipes</button>
+                </div>
+
+                <div id="pizza-recipes" class="recipe-section active">
+                    <h3>Pizza Recipes (12+ Varieties)</h3>
+                    <div id="pizza-recipes-grid" class="recipes-grid">
+                        <!-- Pizza recipes will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="burger-recipes" class="recipe-section">
+                    <h3>Burger Recipes (12+ Varieties)</h3>
+                    <div id="burger-recipes-grid" class="recipes-grid">
+                        <!-- Burger recipes will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div id="sandwich-recipes" class="recipe-section">
+                    <h3>Sandwich Recipes (12+ Varieties)</h3>
+                    <div id="sandwich-recipes-grid" class="recipes-grid">
+                        <!-- Sandwich recipes will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Equipment Section -->
+            <section id="equipment" class="content-section">
+                <h2>Equipment Guide - सभी 9 Machines</h2>
+                <div id="equipment-accordion" class="equipment-accordion">
+                    <!-- Equipment items will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Safety Section -->
+            <section id="safety" class="content-section">
+                <h2>Food Safety & Hygiene - FSSAI Compliance</h2>
+                
+                <div class="safety-tabs">
+                    <button class="safety-tab active" data-tab="personal">Personal Hygiene</button>
+                    <button class="safety-tab" data-tab="kitchen">Kitchen Safety</button>
+                    <button class="safety-tab" data-tab="food">Food Safety</button>
+                    <button class="safety-tab" data-tab="haccp">HACCP</button>
+                </div>
+
+                <div id="personal-safety" class="safety-content active">
+                    <div class="safety-grid">
+                        <div class="safety-card">
+                            <h3>Hand Washing Protocol</h3>
+                            <div class="safety-checklist">
+                                <label>
+                                    <input type="checkbox" data-safety="hand-wash-1">
+                                    40-60 second hand washing with soap
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hand-wash-2">
+                                    Wash before handling food
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hand-wash-3">
+                                    Wash after using restroom
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hand-wash-4">
+                                    Wash after touching face/hair
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="safety-card">
+                            <h3>Personal Hygiene Standards</h3>
+                            <div class="safety-checklist">
+                                <label>
+                                    <input type="checkbox" data-safety="hygiene-1">
+                                    Clean uniform & apron daily
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hygiene-2">
+                                    Hair net mandatory at all times
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hygiene-3">
+                                    No jewelry except plain wedding ring
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hygiene-4">
+                                    Trim nails weekly
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="hygiene-5">
+                                    No strong perfumes/colognes
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="kitchen-safety" class="safety-content">
+                    <div class="safety-grid">
+                        <div class="safety-card">
+                            <h3>Surface Cleaning</h3>
+                            <div class="cleaning-schedule">
+                                <div class="cleaning-item">
+                                    <div class="cleaning-frequency">Every 2 Hours</div>
+                                    <div>Sanitize all food contact surfaces</div>
+                                </div>
+                                <div class="cleaning-item">
+                                    <div class="cleaning-frequency">After Each Use</div>
+                                    <div>Clean cutting boards, utensils</div>
+                                </div>
+                                <div class="cleaning-item">
+                                    <div class="cleaning-frequency">Daily</div>
+                                    <div>Deep clean floors, walls</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="safety-card">
+                            <h3>Color-Coded System</h3>
+                            <div class="color-code-grid">
+                                <div class="color-item">
+                                    <div class="color-dot red-dot"></div>
+                                    <span>Raw Vegetables</span>
+                                </div>
+                                <div class="color-item">
+                                    <div class="color-dot blue-dot"></div>
+                                    <span>Cooked Food</span>
+                                </div>
+                                <div class="color-item">
+                                    <div class="color-dot green-dot"></div>
+                                    <span>Salads/Fresh</span>
+                                </div>
+                                <div class="color-item">
+                                    <div class="color-dot yellow-dot"></div>
+                                    <span>Dairy Products</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="food-safety" class="safety-content">
+                    <div class="safety-grid">
+                        <div class="safety-card">
+                            <h3>Temperature Control</h3>
+                            <div class="temp-chart">
+                                <div class="temp-item safe">
+                                    <div class="temp-range">Above 63°C</div>
+                                    <div class="temp-desc">Hot food serving temperature</div>
+                                </div>
+                                <div class="temp-item danger">
+                                    <div class="temp-range">5°C - 63°C</div>
+                                    <div class="temp-desc">DANGER ZONE - Bacteria growth</div>
+                                </div>
+                                <div class="temp-item safe">
+                                    <div class="temp-range">Below 5°C</div>
+                                    <div class="temp-desc">Cold food storage safe</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="safety-card">
+                            <h3>Storage Guidelines</h3>
+                            <div class="safety-checklist">
+                                <label>
+                                    <input type="checkbox" data-safety="storage-1">
+                                    Label all containers with date/time
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="storage-2">
+                                    FIFO - First In First Out rotation
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="storage-3">
+                                    Check expiry dates every shift
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="storage-4">
+                                    Store raw and cooked separately
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="haccp-safety" class="safety-content">
+                    <div class="safety-grid">
+                        <div class="safety-card">
+                            <h3>Critical Control Points</h3>
+                            <div class="haccp-points">
+                                <div class="haccp-point">
+                                    <h4>CCP 1: Receiving</h4>
+                                    <p>Check temperature, quality of incoming ingredients</p>
+                                </div>
+                                <div class="haccp-point">
+                                    <h4>CCP 2: Storage</h4>
+                                    <p>Maintain proper temperatures in fridges/freezers</p>
+                                </div>
+                                <div class="haccp-point">
+                                    <h4>CCP 3: Cooking</h4>
+                                    <p>Ensure minimum cooking temperatures reached</p>
+                                </div>
+                                <div class="haccp-point">
+                                    <h4>CCP 4: Serving</h4>
+                                    <p>Hold hot food >63°C, cold food <5°C</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="safety-card">
+                            <h3>Record Keeping</h3>
+                            <div class="safety-checklist">
+                                <label>
+                                    <input type="checkbox" data-safety="record-1">
+                                    Document all temperature logs
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="record-2">
+                                    Monitor critical control points
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-safety="record-3">
+                                    Corrective action protocols
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bulk Prep Section -->
+            <section id="bulk-prep" class="content-section">
+                <h2>Bulk Preparation Guide</h2>
+                
+                <div class="bulk-content">
+                    <div class="scaling-calculator">
+                        <h3>Recipe Scaling Calculator</h3>
+                        <div class="calculator-form">
+                            <div class="form-group">
+                                <label for="recipe-select">Select Recipe:</label>
+                                <select id="recipe-select" class="form-control">
+                                    <option value="">Choose a recipe...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="target-quantity">Target Quantity:</label>
+                                <input type="number" id="target-quantity" class="form-control" min="1" value="25">
+                            </div>
+                            <div class="multiplier-display">
+                                Multiplier: <span id="multiplier">25x</span>
+                            </div>
+                            <div id="scaled-ingredients" class="scaled-recipe">
+                                <h4>Scaled Ingredients</h4>
+                                <div class="scaled-ingredients">
+                                    <p>Select a recipe to see scaled ingredients</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bulk-prep-sections">
+                        <div class="bulk-prep-card">
+                            <h3>Make-Ahead Schedule</h3>
+                            <div class="make-ahead-table">
+                                <div class="table-item">
+                                    <div class="table-header">Pizza Sauce</div>
+                                    <div>3 days fridge | 30 days freezer</div>
+                                </div>
+                                <div class="table-item">
+                                    <div class="table-header">Burger Patties</div>
+                                    <div>1 day fridge | 90 days freezer</div>
+                                </div>
+                                <div class="table-item">
+                                    <div class="table-header">Sandwich Fillings</div>
+                                    <div>2 days fridge | Not suitable for freezing</div>
+                                </div>
+                                <div class="table-item">
+                                    <div class="table-header">Grated Cheese</div>
+                                    <div>5 days fridge | 60 days freezer</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bulk-prep-card">
+                            <h3>Prep Time Guidelines</h3>
+                            <div class="prep-times">
+                                <div class="prep-item">
+                                    <span class="prep-task">Pizza dough preparation</span>
+                                    <span class="prep-time">2 hours before service</span>
+                                </div>
+                                <div class="prep-item">
+                                    <span class="prep-task">Vegetable chopping</span>
+                                    <span class="prep-time">4 hours shelf life</span>
+                                </div>
+                                <div class="prep-item">
+                                    <span class="prep-task">Sauce preparation</span>
+                                    <span class="prep-time">Day before service</span>
+                                </div>
+                                <div class="prep-item">
+                                    <span class="prep-task">Paneer marination</span>
+                                    <span class="prep-time">2-4 hours minimum</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bulk-prep-card">
+                            <h3>Storage Labels Template</h3>
+                            <div class="storage-labels">
+                                <span class="storage-label">Item Name</span>
+                                <span class="storage-label">Prep Date</span>
+                                <span class="storage-label">Use By Date</span>
+                                <span class="storage-label">Storage Temp</span>
+                                <span class="storage-label">Staff Initials</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Maintenance Section -->
+            <section id="maintenance" class="content-section">
+                <h2>Maintenance Schedule</h2>
+                
+                <div class="maintenance-tabs">
+                    <button class="maintenance-btn active" data-period="daily">Daily</button>
+                    <button class="maintenance-btn" data-period="weekly">Weekly</button>
+                    <button class="maintenance-btn" data-period="monthly">Monthly</button>
+                </div>
+
+                <div id="daily-maintenance" class="maintenance-content active">
+                    <h3>Daily Maintenance Tasks</h3>
+                    <div class="maintenance-grid">
+                        <div class="maintenance-card">
+                            <h4>General Cleaning</h4>
+                            <div class="maintenance-checklist">
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-1">
+                                    Wipe all stainless steel surfaces
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-2">
+                                    Check fridge/freezer temps and log
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-3">
+                                    Filter fryer oil and check quality
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-4">
+                                    Clean coffee machine
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-5">
+                                    Sanitize food contact surfaces
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="daily-6">
+                                    Empty trash and replace liners
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="weekly-maintenance" class="maintenance-content">
+                    <h3>Weekly Maintenance Tasks</h3>
+                    <div class="maintenance-grid">
+                        <div class="maintenance-card">
+                            <h4>Deep Cleaning</h4>
+                            <div class="maintenance-checklist">
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-1">
+                                    Deep clean pizza oven interior
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-2">
+                                    Lubricate sandwich maker hinges
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-3">
+                                    Descale coffee machine
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-4">
+                                    Clean exhaust filters
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-5">
+                                    Deep mop floors with disinfectant
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="weekly-6">
+                                    Check first aid kit supplies
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="monthly-maintenance" class="maintenance-content">
+                    <h3>Monthly Maintenance Tasks</h3>
+                    <div class="maintenance-grid">
+                        <div class="maintenance-card">
+                            <h4>Professional Service</h4>
+                            <div class="maintenance-checklist">
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-1">
+                                    Calibrate all thermometers
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-2">
+                                    Service dough mixer motor
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-3">
+                                    Professional pest control inspection
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-4">
+                                    Deep clean refrigeration coils
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-5">
+                                    Test emergency equipment
+                                </label>
+                                <label>
+                                    <input type="checkbox" data-maintenance="monthly-6">
+                                    Update training records
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Emergency Section -->
+            <section id="emergency" class="content-section">
+                <h2>Emergency Procedures</h2>
+                
+                <div class="emergency-banner">
+                    <div class="emergency-contacts">
+                        <div class="emergency-contact">
+                            <div class="contact-icon">🚒</div>
+                            <div class="contact-info">
+                                <div class="contact-label">Fire Department</div>
+                                <div class="contact-number">101</div>
+                            </div>
+                        </div>
+                        <div class="emergency-contact">
+                            <div class="contact-icon">🚑</div>
+                            <div class="contact-info">
+                                <div class="contact-label">Ambulance</div>
+                                <div class="contact-number">108</div>
+                            </div>
+                        </div>
+                        <div class="emergency-contact">
+                            <div class="contact-icon">👮</div>
+                            <div class="contact-info">
+                                <div class="contact-label">Police</div>
+                                <div class="contact-number">100</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="emergency-procedures">
+                    <div class="procedure-card fire-procedure">
+                        <h3>🔥 Fire Emergency</h3>
+                        <div class="procedure-steps">
+                            <div class="procedure-step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Turn off main gas/electric supply immediately</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Use Class K fire extinguisher for kitchen fires</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Evacuate via nearest exit (back door preferred)</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">Call 101 fire department</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">5</div>
+                                <div class="step-text">Do not use water on oil fires</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">6</div>
+                                <div class="step-text">Account for all staff at meeting point</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="procedure-card electrical-procedure">
+                        <h3>⚡ Electrical Emergency</h3>
+                        <div class="procedure-steps">
+                            <div class="procedure-step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Switch off main circuit breaker</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Do not touch live wires or equipment</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Call qualified electrician immediately</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">Isolate affected area</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">5</div>
+                                <div class="step-text">Use wooden/plastic tools only</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">6</div>
+                                <div class="step-text">Report to management</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="procedure-card injury-procedure">
+                        <h3>🩹 Medical Emergency</h3>
+                        <div class="procedure-steps">
+                            <div class="procedure-step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Apply first aid if trained</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Call 108 for ambulance</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Do not move injured person unless necessary</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">Record incident details</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">5</div>
+                                <div class="step-text">Keep first aid kit stocked</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">6</div>
+                                <div class="step-text">Know location of nearest hospital</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="procedure-card equipment-procedure">
+                        <h3>⚙️ Equipment Failure</h3>
+                        <div class="procedure-steps">
+                            <div class="procedure-step">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Immediately unplug faulty unit</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Tag equipment 'OUT OF SERVICE'</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Remove from food prep area</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">4</div>
+                                <div class="step-text">Call authorized service technician</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">5</div>
+                                <div class="step-text">Document fault details</div>
+                            </div>
+                            <div class="procedure-step">
+                                <div class="step-number">6</div>
+                                <div class="step-text">Use backup equipment if available</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Utility Panel -->
+    <div class="utility-panel">
+        <button id="timer-btn" class="utility-btn timer-btn" title="Kitchen Timer">⏱️</button>
+        <button id="search-btn" class="utility-btn search-btn" title="Search Recipes">🔍</button>
+        <button id="converter-btn" class="utility-btn converter-btn" title="Unit Converter">🔄</button>
+        <button id="cost-btn" class="utility-btn cost-btn" title="Cost Calculator">💰</button>
+    </div>
+
+    <!-- Timer Overlay -->
+    <div id="timer-overlay" class="timer-overlay hidden">
+        <div class="timer-widget">
+            <div class="widget-header">
+                <h4>Kitchen Timer</h4>
+                <button class="close-widget" data-overlay="timer-overlay">✕</button>
+            </div>
+            <div class="timer-form">
+                <div class="form-row">
+                    <input type="text" id="timer-name" placeholder="Timer name..." class="form-control">
+                    <input type="number" id="timer-minutes" placeholder="Min" min="0" max="59" class="form-control">
+                    <input type="number" id="timer-seconds" placeholder="Sec" min="0" max="59" class="form-control">
+                    <button id="start-timer" class="btn btn--primary">Start</button>
+                </div>
+            </div>
+            <div id="active-timers" class="active-timers-widget">
+                <!-- Active timers will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="search-overlay hidden">
+        <div class="search-widget">
+            <div class="widget-header">
+                <h4>Search Recipes & Equipment</h4>
+                <button class="close-widget" data-overlay="search-overlay">✕</button>
+            </div>
+            <div class="search-form">
+                <input type="text" id="global-search" placeholder="Search..." class="form-control">
+                <div class="search-filters">
+                    <select id="search-category" class="form-control">
+                        <option value="">All Categories</option>
+                        <option value="recipes">Recipes</option>
+                        <option value="equipment">Equipment</option>
+                        <option value="safety">Safety</option>
+                    </select>
+                </div>
+            </div>
+            <div id="search-results" class="search-results">
+                <p class="no-results">Start typing to search...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Converter Overlay -->
+    <div id="converter-overlay" class="converter-overlay hidden">
+        <div class="converter-widget">
+            <div class="widget-header">
+                <h4>Unit Converter</h4>
+                <button class="close-widget" data-overlay="converter-overlay">✕</button>
+            </div>
+            <div class="converter-tabs">
+                <button class="converter-tab active" data-converter="weight">Weight</button>
+                <button class="converter-tab" data-converter="volume">Volume</button>
+                <button class="converter-tab" data-converter="temperature">Temperature</button>
+            </div>
+            <div id="weight-converter" class="converter-content active">
+                <div class="converter-row">
+                    <input type="number" id="weight-input" class="form-control" placeholder="Enter weight">
+                    <select id="weight-from" class="form-control">
+                        <option value="g">Grams (g)</option>
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="oz">Ounces (oz)</option>
+                        <option value="lb">Pounds (lb)</option>
+                    </select>
+                </div>
+                <div class="converter-arrow">⬇️</div>
+                <div class="converter-row">
+                    <div id="weight-result" class="converter-result">Result will appear here</div>
+                    <select id="weight-to" class="form-control">
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="g">Grams (g)</option>
+                        <option value="oz">Ounces (oz)</option>
+                        <option value="lb">Pounds (lb)</option>
+                    </select>
+                </div>
+            </div>
+            <div id="volume-converter" class="converter-content">
+                <div class="converter-row">
+                    <input type="number" id="volume-input" class="form-control" placeholder="Enter volume">
+                    <select id="volume-from" class="form-control">
+                        <option value="ml">Milliliters (ml)</option>
+                        <option value="l">Liters (l)</option>
+                        <option value="cup">Cups</option>
+                        <option value="tbsp">Tablespoons</option>
+                        <option value="tsp">Teaspoons</option>
+                    </select>
+                </div>
+                <div class="converter-arrow">⬇️</div>
+                <div class="converter-row">
+                    <div id="volume-result" class="converter-result">Result will appear here</div>
+                    <select id="volume-to" class="form-control">
+                        <option value="l">Liters (l)</option>
+                        <option value="ml">Milliliters (ml)</option>
+                        <option value="cup">Cups</option>
+                        <option value="tbsp">Tablespoons</option>
+                        <option value="tsp">Teaspoons</option>
+                    </select>
+                </div>
+            </div>
+            <div id="temperature-converter" class="converter-content">
+                <div class="converter-row">
+                    <input type="number" id="temp-input" class="form-control" placeholder="Enter temperature">
+                    <select id="temp-from" class="form-control">
+                        <option value="c">Celsius (°C)</option>
+                        <option value="f">Fahrenheit (°F)</option>
+                        <option value="k">Kelvin (K)</option>
+                    </select>
+                </div>
+                <div class="converter-arrow">⬇️</div>
+                <div class="converter-row">
+                    <div id="temp-result" class="converter-result">Result will appear here</div>
+                    <select id="temp-to" class="form-control">
+                        <option value="f">Fahrenheit (°F)</option>
+                        <option value="c">Celsius (°C)</option>
+                        <option value="k">Kelvin (K)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cost Calculator Overlay -->
+    <div id="cost-overlay" class="cost-overlay hidden">
+        <div class="cost-widget">
+            <div class="widget-header">
+                <h4>Cost Calculator</h4>
+                <button class="close-widget" data-overlay="cost-overlay">✕</button>
+            </div>
+            <div class="cost-form">
+                <div class="form-group">
+                    <label for="cost-recipe">Select Recipe:</label>
+                    <select id="cost-recipe" class="form-control">
+                        <option value="">Choose a recipe...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cost-quantity">Quantity:</label>
+                    <input type="number" id="cost-quantity" class="form-control" min="1" value="1">
+                </div>
+                <div id="cost-breakdown" class="cost-breakdown">
+                    <p class="no-selection">Select a recipe to see cost breakdown</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipe Modal -->
+    <div id="recipe-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" data-modal="recipe-modal">✕</span>
+            <div id="recipe-modal-content">
+                <!-- Recipe details will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" class="scroll-to-top hidden" aria-label="Scroll to top">⬆️</button>
+
+    <script src="app.js"></script>
 </body>
 </html>
